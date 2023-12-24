@@ -1,44 +1,24 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     entry: {
-        main: './src/js/main.js',
-        home: './src/js/pages/home.js',
-        about: './src/js/pages/about.js',
+        registro: './frontend/src/js/pages/registro.js',
     },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
     },
-    module: {
-        rules: [
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
-            },
-        ],
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './public/index.html',
-            chunks: ['main'],
-            filename: 'index.html',
-        }),
-        new HtmlWebpackPlugin({
-            template: './public/home.html',
-            chunks: ['home'],
-            filename: 'home.html',
-        }),
-        new HtmlWebpackPlugin({
-            template: './public/about.html',
-            chunks: ['about'],
-            filename: 'about.html',
-        }),
-    ],
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
-        port: 3000,
-        open: true,
+        static: {
+            directory: path.resolve(__dirname, 'src/public'), // Ruta base para el servidor de desarrollo
+        },
+        port: 8090,
+        open: {
+            target: 'http://localhost:8090/src/public/index.html',
+        },
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
     },
 };
