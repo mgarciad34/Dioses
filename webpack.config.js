@@ -3,7 +3,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        registro: './frontend/src/js/pages/registro.js',
+        registro: './src/js/pages/registro.js',
+        login: './src/js/pages/login.js',
     },
     output: {
         filename: '[name].bundle.js',
