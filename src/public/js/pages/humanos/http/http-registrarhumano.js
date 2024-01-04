@@ -1,12 +1,13 @@
-export async function registrarHumano(datos, ruta) {
+export async function registrarHumano(datos) {
     try {
-        const respuesta = await fetch(ruta, {
+        const respuesta = await fetch('http://127.0.0.1:8000/api/nacer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(datos),
         });
+        console.log(respuesta.body)
 
         if (!respuesta.ok) {
             throw new Error(`Error de red: ${respuesta.status}`);

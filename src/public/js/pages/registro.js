@@ -72,19 +72,22 @@ repetirContrasena.addEventListener('input', function () {
     }
 });
 
-btnregistro.addEventListener('click', function () {
+btnregistro.addEventListener('click', function (event) {
+    event.preventDefault();
     const nombreValido = validarNombre(nombre.value);
     const correoValido = validarCorreo(correo.value);
     const contrasenaValida = validarContrasena(contrasena.value);
     const contrasenasCoinciden = confirmarContrasena(contrasena.value, repetirContrasena.value);
 
     if (nombreValido && correoValido && contrasenaValida && contrasenasCoinciden) {
-        var nuevoHumano = new Humanos(nombre, correo, contrasena, repetirContrasena);
-        const url = "http://127.0.0.1:8000/api/nacer";
-        registrarHumano(nuevoHumano, url)
-            .then(function (){
-                //window.location.href="./index.html";
+        var nuevoHumano = new Humanos(nombre.value, correo.value, contrasena.value, repetirContrasena.value);
+        registrarHumano(nuevoHumano.getJSON())
+            .then(function () {
+                // window.location.href="./index.html";
             })
+            .catch(function (error) {
+                console.error('Error al registrar:', error.message);
+            });
     } else {
         alert('Por favor, completa correctamente todos los campos.');
     }
