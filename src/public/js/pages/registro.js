@@ -83,7 +83,7 @@ btnregistro.addEventListener('click', function (event) {
         var nuevoHumano = new Humanos(nombre.value, correo.value, contrasena.value, repetirContrasena.value);
         registrarHumano(nuevoHumano.getJSON())
             .then(function () {
-                // window.location.href="./index.html";
+                window.location.href = "./index.html";
             })
             .catch(function (error) {
                 console.error('Error al registrar:', error.message);
