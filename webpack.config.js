@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         registro: './src/public/js/pages/registro.js',
         login: './src/public/js/pages/login.js',
+        recuperar: './src/public/js/pages/recuperarusuario.js',
     },
     output: {
         filename: '[name].bundle.js',

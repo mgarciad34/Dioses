@@ -6,7 +6,6 @@ var correo = document.getElementById('email');
 var contrasena = document.getElementById('password');
 var btnregistro = document.getElementById('btniniciar');
 
-// Tu código principal
 btnregistro.addEventListener('click', function (event) {
     event.preventDefault();
     const loginSesion = new Login(correo.value, contrasena.value);
