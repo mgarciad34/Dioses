@@ -1,9 +1,11 @@
 export async function registrarHumano(datos) {
     try {
+        const token = sessionStorage.getItem('token'); 
         const respuesta = await fetch('http://127.0.0.1:8000/api/nacer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(datos),
         });
