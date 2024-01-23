@@ -1,0 +1,1 @@
+"Hades"===sessionStorage.getItem("usuario")&&(document.getElementById("eliminarPruebas").style.display="block");
