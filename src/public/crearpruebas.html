@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Form</title>
-    <!-- CSS only -->
+    <title>Creación de pruebas</title>
+    <link rel="icon" type="image/x-icon" href="assets/dios.ico">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
         body {
@@ -53,15 +53,16 @@
                 <form>
                     <div class="form-group">
                         <label for="pregunta">Pregunta</label>
-                        <input type="text" class="form-control" id="pregunta">
+                        <input type="text" class="form-control" id="preguntaInput">
                     </div>
                     <div class="form-group">
                         <label for="palabrasRelacionadas">Palabras Relacionadas</label>
-                        <textarea class="form-control" id="palabrasRelacionadas" rows="3"></textarea>
+                        <textarea class="form-control" id="palabrasRelacionadasTextarea" rows="3"></textarea>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="enviarFormulario()">Enviar</button>
                 </form>
             </div>
+            
 
             <div id="form2" class="form d-none">
                 <form>
@@ -120,6 +121,9 @@
             }
         }
     </script>
+    <script type="module" src="js/pages/dioses/http/http-pruebaslibres.js"></script>
+    <script type="module" src="js/pages/dioses/http/http-pruebaseleccion.js"></script>
+    <script type="module" src="js/pages/dioses/http/http-pruebasvaloracion.js"></script>
 </body>
 
 </html>
