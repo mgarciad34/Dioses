@@ -1,4 +1,4 @@
-export async function registrarPruebaEleccion(datos) {
+export async function registrarPruebaValoracion(datos) {
     try {
         const token = sessionStorage.getItem('token'); 
         const respuesta = await fetch('http://127.0.0.1:8000/api/dioses/crear/prueba/valoracion', {
@@ -9,7 +9,10 @@ export async function registrarPruebaEleccion(datos) {
             },
             body: JSON.stringify(datos),
         });
-        console.log(respuesta.body)
+
+        // Imprime el cuerpo de la respuesta como texto
+        const cuerpoRespuesta = await respuesta.text();
+        console.log(cuerpoRespuesta);
 
         if (!respuesta.ok) {
             throw new Error(`Error de red: ${respuesta.status}`);
