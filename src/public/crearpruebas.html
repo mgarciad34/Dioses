@@ -59,7 +59,7 @@
                         <label for="palabrasRelacionadas">Palabras Relacionadas</label>
                         <textarea class="form-control" id="palabrasRelacionadasTextarea" rows="3"></textarea>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="enviarFormulario()">Enviar</button>
+                    <button type="button" class="btn btn-primary" id="btnlibre">Enviar</button>
                 </form>
             </div>
             
@@ -113,7 +113,6 @@
                 forms[i].classList.add('d-none');
             }
 
-            // Si se seleccionó una opción válida, muestra el formulario correspondiente
             var formSelector = document.getElementById('formSelector');
             if (formSelector.value) {
                 var selectedFormId = formSelector.value;
@@ -121,9 +120,7 @@
             }
         }
     </script>
-    <script type="module" src="js/pages/dioses/http/http-pruebaslibres.js"></script>
-    <script type="module" src="js/pages/dioses/http/http-pruebaseleccion.js"></script>
-    <script type="module" src="js/pages/dioses/http/http-pruebasvaloracion.js"></script>
+    <script src="./dist/crearPruebaLibre.bundle.js"></script>
 </body>
 
 </html>

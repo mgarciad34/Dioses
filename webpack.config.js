@@ -7,7 +7,8 @@ module.exports = {
         login: './src/public/js/pages/login.js',
         recuperar: './src/public/js/pages/recuperarusuario.js',
         hades: './src/public/js/pages/dioses/comprobarHades.js',
-        registrarHumano: './src/public/js/pages/dioses/registrarhumano.js'
+        registrarHumano: './src/public/js/pages/dioses/registrarhumano.js',
+        crearPruebaLibre: './src/public/js/pages/dioses/pruebaslibres.js'
     },
     output: {
         filename: '[name].bundle.js',

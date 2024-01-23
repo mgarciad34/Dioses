@@ -9,7 +9,10 @@ export async function registrarPruebaLibre(datos) {
             },
             body: JSON.stringify(datos),
         });
-        console.log(respuesta.body)
+
+        // Imprime el cuerpo de la respuesta como texto
+        const cuerpoRespuesta = await respuesta.text();
+        console.log(cuerpoRespuesta);
 
         if (!respuesta.ok) {
             throw new Error(`Error de red: ${respuesta.status}`);
