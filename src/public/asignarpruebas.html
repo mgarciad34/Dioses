@@ -27,6 +27,15 @@
   
   <form>
     <div class="form-group">
+      <label for="tipoPrueba">Tipo de prueba:</label>
+      <select class="form-control" id="tipoPrueba" name="tipoPrueba">
+        <option value="libre">Libre</option>
+        <option value="eleccion">Eleccion</option>
+        <option value="valoracion">Valoración</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label for="prueba">Seleccione la prueba:</label>
       <select class="form-control" id="prueba" name="prueba">
         <option value="prueba1">Prueba 1</option>
@@ -53,42 +62,59 @@
     </div>
 
     <div class="mt-3">
-      <button type="button" class="btn btn-primary" id="agregarUsuario">Agregar Usuario</button>
-      <button type="button" class="btn btn-danger" id="quitarUsuario">Quitar Usuario</button>
-      <button type="button" class="btn btn-success" id="seleccionarTodos">Seleccionar Todos</button>
+      <button type="button" class="btn btn-primary" onclick="agregarUsuario()">Agregar Usuario</button>
+      <button type="button" class="btn btn-danger" onclick="quitarUsuario()">Quitar Usuario</button>
+      <button type="button" class="btn btn-success" onclick="seleccionarTodos()">Seleccionar Todos</button>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Asignar Prueba</button>
   </form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
-  $(document).ready(function () {
-    $('#agregarUsuario').on('click', function () {
-      $('#usuarios option:selected').appendTo('#usuariosSeleccionados');
-    });
+  function agregarUsuario() {
+    var usuarios = document.getElementById('usuarios');
+    var usuariosSeleccionados = document.getElementById('usuariosSeleccionados');
+    moveSelectedOptions(usuarios, usuariosSeleccionados);
+  }
 
-    $('#quitarUsuario').on('click', function () {
-      $('#usuariosSeleccionados option:selected').appendTo('#usuarios');
-    });
+  function quitarUsuario() {
+    var usuariosSeleccionados = document.getElementById('usuariosSeleccionados');
+    var usuarios = document.getElementById('usuarios');
+    moveSelectedOptions(usuariosSeleccionados, usuarios);
+  }
 
-    $('#seleccionarTodos').on('click', function () {
-      var $usuarios = $('#usuarios option');
-      var $usuariosSeleccionados = $('#usuariosSeleccionados');
+  function seleccionarTodos() {
+    var usuarios = document.getElementById('usuarios');
+    var usuariosSeleccionados = document.getElementById('usuariosSeleccionados');
 
-      if ($(this).text() === 'Seleccionar Todos') {
-        $usuarios.appendTo($usuariosSeleccionados);
-        $(this).text('Deseleccionar Todos');
-      } else {
-        // Mover todos los usuarios seleccionados de vuelta a la lista de usuarios disponibles
-        $usuariosSeleccionados.find('option').appendTo('#usuarios');
-        $(this).text('Seleccionar Todos');
-      }
+    if (usuarios.options.length > 0) {
+      moveAllOptions(usuarios, usuariosSeleccionados);
+    } else {
+      moveAllOptions(usuariosSeleccionados, usuarios);
+    }
+  }
+
+  function moveSelectedOptions(source, destination) {
+    var selectedOptions = getSelectedOptions(source);
+    moveOptions(selectedOptions, source, destination);
+  }
+
+  function moveAllOptions(source, destination) {
+    var allOptions = Array.from(source.options);
+    moveOptions(allOptions, source, destination);
+  }
+
+  function getSelectedOptions(select) {
+    return Array.from(select.options).filter(option => option.selected);
+  }
+
+  function moveOptions(options, source, destination) {
+    options.forEach(option => {
+      destination.add(option);
+      source.remove(option.index);
     });
-  });
+  }
 </script>
 
 </body>
