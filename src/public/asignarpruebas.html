@@ -10,10 +10,10 @@
       background-image: url('https://journey.app/noticias/wp-content/uploads/2020/04/Greciatourpuntocom.jpg');
       background-size: cover;
       background-repeat: no-repeat;
-      color: black; /* Puedes ajustar el color del texto según el contraste de tu imagen de fondo */
+      color: black;
     }
     .container {
-      background-color: rgba(255, 255, 255, 0.8); /* Ajusta la opacidad del fondo para que el texto sea legible */
+      background-color: rgba(255, 255, 255, 0.8);
       padding: 20px;
       border-radius: 10px;
       margin-top: 50px;
@@ -55,6 +55,7 @@
     <div class="mt-3">
       <button type="button" class="btn btn-primary" id="agregarUsuario">Agregar Usuario</button>
       <button type="button" class="btn btn-danger" id="quitarUsuario">Quitar Usuario</button>
+      <button type="button" class="btn btn-success" id="seleccionarTodos">Seleccionar Todos</button>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Asignar Prueba</button>
@@ -72,6 +73,20 @@
 
     $('#quitarUsuario').on('click', function () {
       $('#usuariosSeleccionados option:selected').appendTo('#usuarios');
+    });
+
+    $('#seleccionarTodos').on('click', function () {
+      var $usuarios = $('#usuarios option');
+      var $usuariosSeleccionados = $('#usuariosSeleccionados');
+
+      if ($(this).text() === 'Seleccionar Todos') {
+        $usuarios.appendTo($usuariosSeleccionados);
+        $(this).text('Deseleccionar Todos');
+      } else {
+        // Mover todos los usuarios seleccionados de vuelta a la lista de usuarios disponibles
+        $usuariosSeleccionados.find('option').appendTo('#usuarios');
+        $(this).text('Seleccionar Todos');
+      }
     });
   });
 </script>
