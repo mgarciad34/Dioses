@@ -149,3 +149,73 @@ function moveAllOptions(sourceSelect, destinationSelect) {
     // Limpiar la fuente después de mover todas las opciones
     sourceSelect.innerHTML = '';
 }
+
+function asignarPrueba() {
+    var usuariosSeleccionadosSelect = document.getElementById('usuariosSeleccionados');
+    var tipoPruebaSelect = document.getElementById('tipoPrueba');
+    var pruebaSelect = document.getElementById('prueba');
+    var token = sessionStorage.getItem('token');
+  
+    // Obtener todos los valores seleccionados
+    var selectedValues = [];
+    for (var i = 0; i < usuariosSeleccionadosSelect.options.length; i++) {
+      selectedValues.push(usuariosSeleccionadosSelect.options[i].value);
+    }
+  
+    // Mostrar los valores por consola
+    console.log("Usuarios seleccionados:", selectedValues);
+  
+    // Verificar que haya usuarios seleccionados
+    if (selectedValues.length === 0) {
+      console.log("No hay usuarios seleccionados para asignar la prueba.");
+      return;
+    }
+  
+    // Obtener el valor del tipo de prueba y la prueba seleccionada
+    var tipoPruebaValue = tipoPruebaSelect.value;
+    var pruebaValue = pruebaSelect.value;
+  
+    // Realizar la petición POST a la API para cada usuario seleccionado
+    selectedValues.forEach(function (usuarioId) {
+      var dataToSend = {
+        humano_id: usuarioId,
+        tipo_prueba: tipoPruebaValue,
+        prueba_id: pruebaValue,
+      };
+  
+      // Mostrar por consola los datos que se van a enviar
+      console.log("Datos a enviar:", dataToSend);
+  
+      // Realizar la solicitud POST para cada usuario seleccionado
+      fetch('http://127.0.0.1:8000/api/dioses/asignar/prueba', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify(dataToSend),
+      })
+        .then(response => {
+          // Verificar si la respuesta es un error antes de intentar convertirla a JSON
+          if (!response.ok) {
+            console.error('Error en la solicitud:', response.status, response.statusText);
+            throw new Error('Error en la solicitud: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Manejar la respuesta de la API según tus necesidades
+          console.log("Respuesta de la API para humano_id", usuarioId, ":", data);
+        })
+        .catch((error) => {
+          console.error('Error al enviar la prueba para humano_id', usuarioId, ':', error);
+        });
+    });
+  
+    // Limpiar y recargar el select de Usuarios disponibles
+    cargarDatosUsuarios();
+    // Limpiar la lista de usuarios seleccionados después de asignar la prueba
+    usuariosSeleccionadosSelect.innerHTML = '';
+  }
+  
