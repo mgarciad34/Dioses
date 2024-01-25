@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Asignación de Pruebas</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-image: url('https://journey.app/noticias/wp-content/uploads/2020/04/Greciatourpuntocom.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: black; /* Puedes ajustar el color del texto según el contraste de tu imagen de fondo */
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.8); /* Ajusta la opacidad del fondo para que el texto sea legible */
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="mb-4">Asignación de Pruebas</h2>
+  
+  <form>
+    <div class="form-group">
+      <label for="prueba">Seleccione la prueba:</label>
+      <select class="form-control" id="prueba" name="prueba">
+        <option value="prueba1">Prueba 1</option>
+        <option value="prueba2">Prueba 2</option>
+        <option value="prueba3">Prueba 3</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label for="usuarios">Usuarios disponibles:</label>
+        <select multiple class="form-control" id="usuarios" name="usuarios[]">
+          <option value="usuario1">Usuario 1</option>
+          <option value="usuario2">Usuario 2</option>
+          <option value="usuario3">Usuario 3</option>
+          <!-- Agrega más opciones según sea necesario -->
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="usuariosSeleccionados">Usuarios seleccionados:</label>
+        <select multiple class="form-control" id="usuariosSeleccionados" name="usuariosSeleccionados[]"></select>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button type="button" class="btn btn-primary" id="agregarUsuario">Agregar Usuario</button>
+      <button type="button" class="btn btn-danger" id="quitarUsuario">Quitar Usuario</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Asignar Prueba</button>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#agregarUsuario').on('click', function () {
+      $('#usuarios option:selected').appendTo('#usuariosSeleccionados');
+    });
+
+    $('#quitarUsuario').on('click', function () {
+      $('#usuariosSeleccionados option:selected').appendTo('#usuarios');
+    });
+  });
+</script>
+
+</body>
+</html>
