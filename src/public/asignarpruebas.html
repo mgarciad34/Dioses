@@ -48,10 +48,6 @@
         <div class="col-md-6">
           <label for="usuarios">Usuarios disponibles:</label>
           <select multiple class="form-control" id="usuarios" name="usuarios[]">
-            <option value="usuario1">Usuario 1</option>
-            <option value="usuario2">Usuario 2</option>
-            <option value="usuario3">Usuario 3</option>
-            <!-- Agrega más opciones según sea necesario -->
           </select>
         </div>
 
@@ -121,6 +117,44 @@
           console.error('Error:', error);
         });
     }
+
+    function cargarDatosUsuarios() {
+      var usuariosSelect = document.getElementById('usuarios');
+      var token = sessionStorage.getItem('token');
+
+      // Ajusta la URL de la API según tu caso
+      var apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos';
+
+      // Hacer la petición a la API incluyendo el token
+      fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.data)
+          // Limpiar opciones actuales del select de usuarios
+          usuariosSelect.innerHTML = '';
+
+          // Procesar los datos recibidos y llenar el select de usuarios
+          for (var i = 0; i < data.data.length; i++) {
+            var option = document.createElement("option");
+            option.text = data.data[i].nombre;
+            option.value = data.data[i].id;
+            usuariosSelect.add(option);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
+
+    // Resto de funciones aquí
 
   </script>
 
