@@ -45,20 +45,15 @@
 
 <body>
     <div class="container mt-5">
-        <select id="formSelector" class="form-control" onchange="loadTable(this.value)">
+        <select id="formSelector" class="form-control" onchange="loadTable()">
             <option value="">Selecciona una tabla</option>
             <option value="tabla1">Consultar Pruebas Libres</option>
             <option value="tabla2">Consultar Pruebas Eleccion</option>
             <option value="tabla3">Consultar Pruebas Valoración</option>
         </select>
 
-        <!-- Agregamos la clase 'hidden' a la tabla -->
         <div id="tablaContainer" class="hidden"></div>
     </div>
-
-    <script src="js/pages/dioses/consultarPruebasLibres.js"></script>
-    <script src="js/pages/dioses/consultarPruebasEleccion.js"></script>
-    
+    <script src="./js/pages/dioses/consultarPruebas.js"></script>
 </body>
-
-</html>
+</html> 
