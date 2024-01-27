@@ -52,11 +52,24 @@ function cargarDatosPrueba() {
 function cargarDatosUsuarios() {
     var usuariosSelect = document.getElementById('usuarios');
     var token = sessionStorage.getItem('token');
+    var usuario = sessionStorage.getItem('usuario');
 
-    // Ajusta la URL de la API según tu caso
-    var apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos';
+    var apiUrl;
+    switch (usuario) {
+        case 'Zeus':
+            apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/1';
+            break;
+        case 'Poseidon':
+            apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/2';
+            break;
+        case 'Hades':
+            apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/3';
+            break;
+        default:
+            apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos';
+    }
 
-    // Hacer la petición a la API incluyendo el token
+    // Realiza la petición a la API incluyendo el token
     fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -66,10 +79,10 @@ function cargarDatosUsuarios() {
         .then(response => response.json())
         .then(data => {
             console.log(data.data)
-            // Limpiar opciones actuales del select de usuarios
+            // Limpia las opciones actuales del select de usuarios
             usuariosSelect.innerHTML = '';
 
-            // Procesar los datos recibidos y llenar el select de usuarios
+            // Procesa los datos recibidos y llena el select de usuarios
             for (var i = 0; i < data.data.length; i++) {
                 var option = document.createElement("option");
                 option.text = data.data[i].nombre;
@@ -81,6 +94,7 @@ function cargarDatosUsuarios() {
             console.error('Error:', error);
         });
 }
+
 
 document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
 
