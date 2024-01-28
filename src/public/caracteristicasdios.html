@@ -1,8 +1,6 @@
-El error indica que la propiedad "data" no está presente en la respuesta de la API. Para abordar este problema, es importante entender la estructura exacta de la respuesta de la API. Puedes agregar un registro de la respuesta completa en la consola para analizarlo. Aquí hay una versión actualizada del script que también imprime la respuesta completa en la consola:
-
-```html
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <!-- Meta tags -->
     <meta charset="utf-8">
@@ -16,19 +14,21 @@ El error indica que la propiedad "data" no está presente en la respuesta de la 
             background-repeat: no-repeat;
             background-size: cover;
         }
-        
+
         .form-group {
-            background-color: rgba(255, 255, 255, 0.5); /* blanco con 50% de transparencia */
+            background-color: rgba(255, 255, 255, 0.5);
+            /* blanco con 50% de transparencia */
             padding: 20px;
             margin: 20px 0;
         }
     </style>
     <title>Actualizar Características del Dios</title>
 </head>
+
 <body>
     <div class="container">
         <h1 class="mt-4">Actualizar características del Dios</h1>
-        
+
         <form>
             <div class="form-group">
                 <label for="sabiduria">Sabiduría</label>
@@ -50,9 +50,9 @@ El error indica que la propiedad "data" no está presente en la respuesta de la 
                 <label for="audacia">Audacia</label>
                 <input type="number" class="form-control" id="audacia" name="audacia" min="1" max="5" required>
             </div>
-            <button type="button" class="btn btn-primary" onclick="obtenerPoder()">Dame poder</button>
+            <button type="button" class="btn btn-success" onclick="actualizarDatos()">Actualizar Datos</button>
         </form>
-        
+
         <!-- Párrafo para mostrar datos en el DOM -->
         <p id="resultadoDom"></p>
     </div>
@@ -124,6 +124,79 @@ El error indica que la propiedad "data" no está presente en la respuesta de la 
 
         // Cargar datos al cargar la página
         document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
+
+        // Función para actualizar datos
+        async function actualizarDatos() {
+            try {
+                var token = sessionStorage.getItem('token');
+                var usuario = sessionStorage.getItem('usuario');
+                var idUsuario;
+
+                // Obtén el ID del usuario según el nombre (Zeus, Poseidon, Hades)
+                switch (usuario) {
+                    case 'Zeus':
+                        idUsuario = 1;
+                        break;
+                    case 'Poseidon':
+                        idUsuario = 2;
+                        break;
+                    case 'Hades':
+                        idUsuario = 3;
+                        break;
+                    default:
+                        console.error('No se pudo determinar el ID del usuario.');
+                        return;
+                }
+
+                var apiUrl = 'http://127.0.0.1:8000/api/dioses/actualizar/dios';
+
+                // Obtén los valores actualizados de los campos de input
+                var sabiduria = document.getElementById('sabiduria').value;
+                var nobleza = document.getElementById('nobleza').value;
+                var virtud = document.getElementById('virtud').value;
+                var maldad = document.getElementById('maldad').value;
+                var audacia = document.getElementById('audacia').value;
+
+                // Construye el objeto JSON a enviar
+                var datosActualizados = {
+                    id: idUsuario,
+                    sabiduria: sabiduria,
+                    nobleza: nobleza,
+                    virtud: virtud,
+                    maldad: maldad,
+                    audacia: audacia
+                };
+
+                // Realiza la petición PUT a la API incluyendo el token
+                const respuesta = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(datosActualizados)
+                });
+
+                if (!respuesta.ok) {
+                    throw new Error(`Error de red: ${respuesta.status}`);
+                }
+
+                // Imprime la respuesta de la API en la consola para depuración
+                const data = await respuesta.json();
+                console.log('Respuesta de la API al actualizar datos:', data);
+
+                // Actualiza el mensaje en el DOM según la respuesta
+                var resultadoDom = document.getElementById('resultadoDom');
+                if (data && data.message) {
+                    resultadoDom.innerHTML = 'Datos actualizados: ' + data.message;
+                } else {
+                    resultadoDom.innerHTML = 'Error al actualizar datos.';
+                }
+            } catch (error) {
+                console.error('Error al enviar los datos:', error.message);
+            }
+        }
     </script>
 </body>
+
 </html>
