@@ -112,7 +112,6 @@
 
                         // Muestra los datos en el DOM
                         var resultadoDom = document.getElementById('resultadoDom');
-                        resultadoDom.innerHTML = 'Datos en el DOM: Solo los campos deseados';
                     } else {
                         console.error('Error: La propiedad "data" no está presente en la respuesta de la API.');
                     }
@@ -187,11 +186,8 @@
 
                 // Actualiza el mensaje en el DOM según la respuesta
                 var resultadoDom = document.getElementById('resultadoDom');
-                if (data && data.message) {
-                    resultadoDom.innerHTML = 'Datos actualizados: ' + data.message;
-                } else {
-                    resultadoDom.innerHTML = 'Error al actualizar datos.';
-                }
+                window.location.href = "./dashboarddios.html";
+                
             } catch (error) {
                 console.error('Error al enviar los datos:', error.message);
             }
