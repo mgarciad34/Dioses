@@ -1,3 +1,6 @@
+El error indica que la propiedad "data" no está presente en la respuesta de la API. Para abordar este problema, es importante entender la estructura exacta de la respuesta de la API. Puedes agregar un registro de la respuesta completa en la consola para analizarlo. Aquí hay una versión actualizada del script que también imprime la respuesta completa en la consola:
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,9 +28,6 @@
 <body>
     <div class="container">
         <h1 class="mt-4">Actualizar características del Dios</h1>
-
-        <select id="usuarios" class="form-control mb-4"></select>
-        <button id="loadUsersButton" class="btn btn-secondary mb-4">Cargar Usuarios</button>
         
         <form>
             <div class="form-group">
@@ -50,8 +50,11 @@
                 <label for="audacia">Audacia</label>
                 <input type="number" class="form-control" id="audacia" name="audacia" min="1" max="5" required>
             </div>
-            <button type="button" class="btn btn-primary">Dame poder</button>
+            <button type="button" class="btn btn-primary" onclick="obtenerPoder()">Dame poder</button>
         </form>
+        
+        <!-- Párrafo para mostrar datos en el DOM -->
+        <p id="resultadoDom"></p>
     </div>
 
     <!-- Optional JavaScript -->
@@ -60,24 +63,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
+        // Función para obtener poder
+        function obtenerPoder() {
+            // Implementa lógica según tus necesidades
+            console.log('Obtener poder...');
+        }
+
+        // Función para cargar datos al cargar la página
         function cargarDatosUsuarios() {
-            var usuariosSelect = document.getElementById('usuarios');
             var token = sessionStorage.getItem('token');
             var usuario = sessionStorage.getItem('usuario');
 
             var apiUrl;
             switch (usuario) {
                 case 'Zeus':
-                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/1';
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/obtener/dios/1';
                     break;
                 case 'Poseidon':
-                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/2';
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/obtener/dios/2';
                     break;
                 case 'Hades':
-                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/3';
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/obtener/dios/3';
                     break;
                 default:
-                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos';
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/obtener/dios';
             }
 
             // Realiza la petición a la API incluyendo el token
@@ -89,16 +98,23 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.data)
-                    // Limpia las opciones actuales del select de usuarios
-                    usuariosSelect.innerHTML = '';
+                    // Imprime toda la respuesta de la API en la consola para depuración
+                    console.log('Respuesta completa de la API:', data);
 
-                    // Procesa los datos recibidos y llena el select de usuarios
-                    for (var i = 0; i < data.data.length; i++) {
-                        var option = document.createElement("option");
-                        option.text = data.data[i].nombre;
-                        option.value = data.data[i].id;
-                        usuariosSelect.add(option);
+                    // Verifica que la propiedad 'data' existe y no es undefined
+                    if (data) {
+                        // Asigna los valores a los campos de input
+                        document.getElementById('sabiduria').value = data.sabiduria || '';
+                        document.getElementById('nobleza').value = data.nobleza || '';
+                        document.getElementById('virtud').value = data.virtud || '';
+                        document.getElementById('maldad').value = data.maldad || '';
+                        document.getElementById('audacia').value = data.audacia || '';
+
+                        // Muestra los datos en el DOM
+                        var resultadoDom = document.getElementById('resultadoDom');
+                        resultadoDom.innerHTML = 'Datos en el DOM: Solo los campos deseados';
+                    } else {
+                        console.error('Error: La propiedad "data" no está presente en la respuesta de la API.');
                     }
                 })
                 .catch((error) => {
@@ -106,7 +122,7 @@
                 });
         }
 
-        // Cargar datos de usuarios al cargar la página
+        // Cargar datos al cargar la página
         document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
     </script>
 </body>
