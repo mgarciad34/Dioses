@@ -7,13 +7,28 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/foto-gratis/tiro-angulo-viejos-pilares-piedra-griegos-cielo-azul-claro_181624-2890.jpg?w=1380&t=st=1706432288~exp=1706432888~hmac=8b8e9d2e18d58d2663f5aec20af01d302772af2ea1d4029507429faa2a3c676a');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .form-group {
+            background-color: rgba(255, 255, 255, 0.5); /* blanco con 50% de transparencia */
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
     <title>Actualizar Características del Dios</title>
 </head>
 <body>
     <div class="container">
         <h1 class="mt-4">Actualizar características del Dios</h1>
 
+        <select id="usuarios" class="form-control mb-4"></select>
+        <button id="loadUsersButton" class="btn btn-secondary mb-4">Cargar Usuarios</button>
+        
         <form>
             <div class="form-group">
                 <label for="sabiduria">Sabiduría</label>
@@ -35,7 +50,7 @@
                 <label for="audacia">Audacia</label>
                 <input type="number" class="form-control" id="audacia" name="audacia" min="1" max="5" required>
             </div>
-            <button type="submit" class="btn btn-primary">Dame poder</button>
+            <button type="button" class="btn btn-primary">Dame poder</button>
         </form>
     </div>
 
@@ -44,5 +59,55 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function cargarDatosUsuarios() {
+            var usuariosSelect = document.getElementById('usuarios');
+            var token = sessionStorage.getItem('token');
+            var usuario = sessionStorage.getItem('usuario');
+
+            var apiUrl;
+            switch (usuario) {
+                case 'Zeus':
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/1';
+                    break;
+                case 'Poseidon':
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/2';
+                    break;
+                case 'Hades':
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos/3';
+                    break;
+                default:
+                    apiUrl = 'http://127.0.0.1:8000/api/dioses/recuperar/humanos';
+            }
+
+            // Realiza la petición a la API incluyendo el token
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.data)
+                    // Limpia las opciones actuales del select de usuarios
+                    usuariosSelect.innerHTML = '';
+
+                    // Procesa los datos recibidos y llena el select de usuarios
+                    for (var i = 0; i < data.data.length; i++) {
+                        var option = document.createElement("option");
+                        option.text = data.data[i].nombre;
+                        option.value = data.data[i].id;
+                        usuariosSelect.add(option);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Cargar datos de usuarios al cargar la página
+        document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
+    </script>
 </body>
 </html>
