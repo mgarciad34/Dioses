@@ -1,12 +1,13 @@
 export async function recuperar(datos) {
     try {
-        const url = `http://127.0.0.1:8000/api/recuperar?correo=${encodeURIComponent(datos.correo)}`;
+        const url = 'http://localhost:8000/api/recuperar';
 
         const respuesta = await fetch(url, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ correo: datos.correo }),
         });
 
         if (!respuesta.ok) {
