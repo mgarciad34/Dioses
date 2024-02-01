@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <select id="humanosSelect"></select>
+
+    <script>
+        // Función para cargar datos desde la API con autenticación
+        function cargarDatosDesdeAPI() {
+            // Obtener el token almacenado en sessionStorage
+            const token = sessionStorage.getItem('token');
+
+            // Verificar si el token está presente
+            if (!token) {
+                console.error('No se encontró un token en sessionStorage');
+                return;
+            }
+
+            fetch('http://127.0.0.1:8000/api/dioses/recuperar/humanos', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    // Verificar si la respuesta es exitosa (código 200 OK)
+                    if (!response.ok) {
+                        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+                    }
+
+                    // Devolver la respuesta como JSON
+                    return response.json();
+                })
+                .then(data => {
+                    const select = document.getElementById('humanosSelect');
+                    select.innerHTML = '';
+
+                    // Agregar una opción por cada elemento en los datos de la API
+                    data.data.forEach(humano => {
+                        const option = document.createElement('option');
+                        option.value = humano.id;
+                        option.text = humano.nombre;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar datos desde la API:', error));
+        }
+
+        // Llama a la función para cargar datos al cargar la página
+        cargarDatosDesdeAPI();
+    </script>
+</body>
+</html>
