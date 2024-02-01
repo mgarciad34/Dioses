@@ -3,17 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tu Título</title>
     <!-- Asegúrate de incluir la biblioteca de Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/vector-gratis/ilustracion-mitologia-diseno-plano-dibujado-mano_23-2149391243.jpg?w=740&t=st=1706826016~exp=1706826616~hmac=4892d2e5e6f3fda1024db0e03ebc53a84987dbe659aa46f8db77cb6e158a6ced'); /* Reemplaza 'tu_imagen_de_fondo.jpg' con la URL de tu imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh; 
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-group {
+            margin-top: 10px; /* Ajusta el espacio entre el select y los botones */
+        }
+
+        /* Ajustes adicionales según sea necesario */
+    </style>
 </head>
 <body>
-    <select id="humanosSelect" class="form-control mb-2"></select>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 text-center">
+                <select id="humanosSelect" class="form-control mb-2"></select>
 
-    <!-- Botones de Bootstrap -->
-    <div class="btn-group">
-        <button type="button" class="btn btn-danger" id="eliminarBtn">Eliminar</button>
-        <button type="button" class="btn btn-danger" id="eliminarAleatoriamenteBtn">Eliminar Aleatoriamente</button>
+                <!-- Botones de Bootstrap -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" id="eliminarBtn">Eliminar</button>
+                    <br>
+                    <button type="button" class="btn btn-danger" id="eliminarAleatoriamenteBtn">Eliminar Aleatoriamente</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -110,7 +137,7 @@
                         console.log(`Usuario con ID ${selectedUserId} eliminado exitosamente.`);
 
                         // Redirigir a la página deseada después de eliminar
-                        window.location.href =  "./dashboarddios.html";
+                        window.location.href = 'tu_pagina_redireccion.html';
                     })
                     .catch(error => console.error('Error al eliminar usuario:', error));
             }
@@ -156,7 +183,7 @@
                         console.log(`Usuario con ID ${randomUserId} eliminado aleatoriamente.`);
 
                         // Redirigir a la página deseada después de eliminar aleatoriamente
-                        window.location.href =  "./dashboardios.html";
+                        window.location.href = 'tu_pagina_redireccion.html';
                     })
                     .catch(error => console.error('Error al eliminar usuario aleatoriamente:', error));
             }
