@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- Asegúrate de incluir la biblioteca de Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <select id="humanosSelect"></select>
+    <select id="humanosSelect" class="form-control mb-2"></select>
+
+    <!-- Botones de Bootstrap -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-danger" id="eliminarBtn">Eliminar</button>
+        <button type="button" class="btn btn-danger" id="eliminarAleatoriamenteBtn">Eliminar Aleatoriamente</button>
+    </div>
 
     <script>
+        // Declarar token como variable global
+        let token;
+
         // Función para cargar datos desde la API con autenticación
         function cargarDatosDesdeAPI() {
             // Obtener el token almacenado en sessionStorage
-            const token = sessionStorage.getItem('token');
+            token = sessionStorage.getItem('token');
 
             // Verificar si el token está presente
             if (!token) {
@@ -20,6 +31,7 @@
                 return;
             }
 
+            // Reemplaza 'URL_DE_TU_API' con la URL real de tu API
             fetch('http://127.0.0.1:8000/api/dioses/recuperar/humanos', {
                 method: 'GET',
                 headers: {
@@ -36,7 +48,13 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Imprimir la respuesta para verificar su contenido
+                    console.log('Respuesta de la API:', data);
+
+                    // Llenar el select con los nombres obtenidos
                     const select = document.getElementById('humanosSelect');
+
+                    // Limpiar opciones existentes
                     select.innerHTML = '';
 
                     // Agregar una opción por cada elemento en los datos de la API
@@ -52,6 +70,59 @@
 
         // Llama a la función para cargar datos al cargar la página
         cargarDatosDesdeAPI();
+
+        // Agregar eventos de clic a los botones
+        document.getElementById('eliminarBtn').addEventListener('click', eliminarUsuario);
+        document.getElementById('eliminarAleatoriamenteBtn').addEventListener('click', eliminarAleatoriamente);
+
+        // Función para eliminar un usuario
+        function eliminarUsuario() {
+            const select = document.getElementById('humanosSelect');
+            const selectedUserId = select.value;
+
+            // Verificar si se ha seleccionado un usuario en el select
+            if (!selectedUserId) {
+                console.error('Por favor, selecciona un usuario para eliminar.');
+                return;
+            }
+
+            // Confirmar con el usuario antes de realizar la eliminación
+            const confirmacion = confirm('¿Estás seguro de que quieres eliminar este usuario?');
+
+            if (confirmacion) {
+                // Realizar la lógica para eliminar el usuario con el ID seleccionado
+                const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${selectedUserId}`;
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+                        }
+
+                        // Eliminar la opción del select
+                        select.remove(select.selectedIndex);
+
+                        console.log(`Usuario con ID ${selectedUserId} eliminado exitosamente.`);
+                    })
+                    .catch(error => console.error('Error al eliminar usuario:', error));
+            }
+        }
+
+        // Función para eliminar aleatoriamente un usuario
+        function eliminarAleatoriamente() {
+            // Realizar la lógica para eliminar un usuario aleatorio
+            console.log('Eliminar aleatoriamente un usuario');
+        }
     </script>
+
+    <!-- Asegúrate de incluir la biblioteca de Bootstrap (jQuery y Popper.js) antes de cerrar el cuerpo del documento -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
