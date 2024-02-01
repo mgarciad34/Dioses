@@ -108,6 +108,9 @@
                         select.remove(select.selectedIndex);
 
                         console.log(`Usuario con ID ${selectedUserId} eliminado exitosamente.`);
+
+                        // Redirigir a la página deseada después de eliminar
+                        window.location.href =  "./dashboarddios.html";
                     })
                     .catch(error => console.error('Error al eliminar usuario:', error));
             }
@@ -115,8 +118,48 @@
 
         // Función para eliminar aleatoriamente un usuario
         function eliminarAleatoriamente() {
-            // Realizar la lógica para eliminar un usuario aleatorio
-            console.log('Eliminar aleatoriamente un usuario');
+            const select = document.getElementById('humanosSelect');
+
+            // Verificar si hay opciones en el select
+            if (select.options.length === 0) {
+                console.error('No hay usuarios para eliminar.');
+                return;
+            }
+
+            // Obtener un índice aleatorio
+            const randomIndex = Math.floor(Math.random() * select.options.length);
+
+            // Obtener el ID del usuario aleatorio
+            const randomUserId = select.options[randomIndex].value;
+
+            // Confirmar con el usuario antes de realizar la eliminación
+            const confirmacion = confirm(`¿Estás seguro de que quieres eliminar aleatoriamente al usuario con ID ${randomUserId}?`);
+
+            if (confirmacion) {
+                // Realizar la lógica para eliminar el usuario aleatorio
+                const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${randomUserId}`;
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+                        }
+
+                        // Eliminar la opción del select
+                        select.remove(randomIndex);
+
+                        console.log(`Usuario con ID ${randomUserId} eliminado aleatoriamente.`);
+
+                        // Redirigir a la página deseada después de eliminar aleatoriamente
+                        window.location.href =  "./dashboardios.html";
+                    })
+                    .catch(error => console.error('Error al eliminar usuario aleatoriamente:', error));
+            }
         }
     </script>
 
