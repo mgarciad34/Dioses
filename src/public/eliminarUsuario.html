@@ -1,201 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Eliminar Usuarios</title>
     <!-- Asegúrate de incluir la biblioteca de Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
     <!-- Estilos personalizados -->
     <style>
-        body {
-            background-image: url('https://img.freepik.com/vector-gratis/ilustracion-mitologia-diseno-plano-dibujado-mano_23-2149391243.jpg?w=740&t=st=1706826016~exp=1706826616~hmac=4892d2e5e6f3fda1024db0e03ebc53a84987dbe659aa46f8db77cb6e158a6ced'); /* Reemplaza 'tu_imagen_de_fondo.jpg' con la URL de tu imagen de fondo */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh; 
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      body {
+        /* background-image: url('https://img.freepik.com/vector-gratis/ilustracion-mitologia-diseno-plano-dibujado-mano_23-2149391243.jpg?w=740&t=st=1706826016~exp=1706826616~hmac=4892d2e5e6f3fda1024db0e03ebc53a84987dbe659aa46f8db77cb6e158a6ced');
+            /* Reemplaza 'tu_imagen_de_fondo.jpg' con la URL de tu imagen de fondo */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .btn-group {
-            margin-top: 10px; /* Ajusta el espacio entre el select y los botones */
-        }
-
-        /* Ajustes adicionales según sea necesario */
+      .btn-group {
+        margin-top: 10px;
+        /* Ajusta el espacio entre el select y los botones */
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 text-center">
-                <select id="humanosSelect" class="form-control mb-2"></select>
+  </head>
 
-                <!-- Botones de Bootstrap -->
-                <div class="btn-group">
-                    <h1>Elimina a tu humano</h1>
-                    <button type="button" class="btn btn-danger" id="eliminarBtn">Eliminar</button>
-                    <br>
-                    <button type="button" class="btn btn-danger" id="eliminarAleatoriamenteBtn">Eliminar Aleatoriamente</button>
-                </div>
-            </div>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 offset-md-3 text-center">
+          <div class="btn-group">
+            <h1>Elimina a tus humanos</h1>
+            <button type="button" class="btn btn-danger" id="eliminarTodosBtn">
+              Eliminar Todos
+            </button>
+          </div>
+
+          <!-- Tabla dinámica para mostrar los usuarios -->
+          <table class="table table-bordered table-striped mt-3">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuariosBody">
+              <!-- Aquí se cargarán dinámicamente los usuarios -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
 
     <script>
-        // Declarar token como variable global
-        let token;
+      // Declarar token como variable global
+      let token;
 
-        // Función para cargar datos desde la API con autenticación
-        function cargarDatosDesdeAPI() {
-            // Obtener el token almacenado en sessionStorage
-            token = sessionStorage.getItem('token');
+      // Función para cargar datos desde la API con autenticación
+      function cargarDatosDesdeAPI() {
+        // Obtener el token almacenado en sessionStorage
+        token = sessionStorage.getItem("token");
 
-            // Verificar si el token está presente
-            if (!token) {
-                console.error('No se encontró un token en sessionStorage');
-                return;
+        // Verificar si el token está presente
+        if (!token) {
+          console.error("No se encontró un token en sessionStorage");
+          return;
+        }
+
+        // Reemplaza 'URL_DE_TU_API' con la URL real de tu API
+        fetch("http://127.0.0.1:8000/api/dioses/recuperar/humanos", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            // Verificar si la respuesta es exitosa (código 200 OK)
+            if (!response.ok) {
+              throw new Error(
+                `Error en la solicitud: ${response.status} ${response.statusText}`
+              );
             }
 
-            // Reemplaza 'URL_DE_TU_API' con la URL real de tu API
-            fetch('http://127.0.0.1:8000/api/dioses/recuperar/humanos', {
-                method: 'GET',
+            // Devolver la respuesta como JSON
+            return response.json();
+          })
+          .then((data) => {
+            // Imprimir la respuesta para verificar su contenido
+            console.log("Respuesta de la API:", data);
+
+            // Obtener la referencia a la tabla
+            const tablaUsuariosBody =
+              document.getElementById("tablaUsuariosBody");
+
+            // Limpiar filas existentes en la tabla
+            tablaUsuariosBody.innerHTML = "";
+
+            // Filtrar los humanos con vida = 1
+            const humanosConVida = data.data.filter(
+              (humano) => humano.vida === 1
+            );
+
+            // Agregar una fila por cada elemento en los datos filtrados
+            humanosConVida.forEach((humano) => {
+              const fila = tablaUsuariosBody.insertRow();
+
+              // Agregar celdas con datos del humano
+              const celdaId = fila.insertCell(0);
+              const celdaNombre = fila.insertCell(1);
+              const celdaAcciones = fila.insertCell(2);
+
+              // Agregar datos del humano a las celdas
+              celdaId.textContent = humano.id;
+              celdaNombre.textContent = humano.nombre;
+
+              // Agregar atributo data-id a la fila
+              fila.setAttribute("data-id", humano.id);
+
+              // Agregar botón de eliminar en la celda de acciones
+              const btnEliminar = document.createElement("button");
+              btnEliminar.textContent = "Eliminar";
+              btnEliminar.classList.add("btn", "btn-danger");
+              btnEliminar.onclick = function () {
+                eliminarUsuario(humano.id);
+              };
+              celdaAcciones.appendChild(btnEliminar);
+            });
+          })
+          .catch((error) =>
+            console.error("Error al cargar datos desde la API:", error)
+          );
+      }
+
+      // Función para eliminar un usuario
+      function eliminarUsuario(idUsuario) {
+        // Confirmar con el usuario antes de realizar la eliminación
+        const confirmacion = confirm(
+          `¿Estás seguro de que quieres eliminar al usuario con ID ${idUsuario}?`
+        );
+
+        if (confirmacion) {
+          // Realizar la lógica para eliminar el usuario con el ID especificado
+          const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${idUsuario}`;
+
+          fetch(url, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  `Error en la solicitud: ${response.status} ${response.statusText}`
+                );
+              }
+
+              // Eliminar la fila de la tabla
+              const filaEliminar = document.querySelector(
+                `#tablaUsuariosBody tr[data-id="${idUsuario}"]`
+              );
+              if (filaEliminar) {
+                filaEliminar.remove();
+                console.log(
+                  `Usuario con ID ${idUsuario} eliminado exitosamente.`
+                );
+              } else {
+                console.error(
+                  `No se encontró la fila del usuario con ID ${idUsuario}.`
+                );
+              }
+            })
+            .catch((error) =>
+              console.error("Error al eliminar usuario:", error)
+            );
+        }
+      }
+      
+      // Función para eliminar un usuario de manera aleatoria
+function eliminarAleatorio() {
+    // Obtener todas las filas de la tabla
+    const filas = document.querySelectorAll('#tablaUsuariosBody tr');
+
+    // Verificar si hay al menos un usuario
+    if (filas.length > 0) {
+        // Obtener un índice aleatorio
+        const indiceAleatorio = Math.floor(Math.random() * filas.length);
+
+        // Obtener el ID del usuario correspondiente al índice aleatorio
+        const idUsuarioAleatorio = filas[indiceAleatorio].getAttribute('data-id');
+
+        // Confirmar con el usuario antes de realizar la eliminación
+        const confirmacion = confirm(`¿Estás seguro de que quieres eliminar al usuario con ID ${idUsuarioAleatorio}?`);
+
+        if (confirmacion) {
+            // Realizar la lógica para eliminar el usuario con el ID especificado
+            const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${idUsuarioAleatorio}`;
+
+            fetch(url, {
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
                 .then(response => {
-                    // Verificar si la respuesta es exitosa (código 200 OK)
                     if (!response.ok) {
                         throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
                     }
 
-                    // Devolver la respuesta como JSON
-                    return response.json();
-                })
-                .then(data => {
-                    // Imprimir la respuesta para verificar su contenido
-                    console.log('Respuesta de la API:', data);
-
-                    // Llenar el select con los nombres obtenidos
-                    const select = document.getElementById('humanosSelect');
-
-                    // Limpiar opciones existentes
-                    select.innerHTML = '';
-
-                    // Agregar una opción por cada elemento en los datos de la API
-                    data.data.forEach(humano => {
-                        const option = document.createElement('option');
-                        if(humano.vida != 0){
-                            option.value = humano.id;
-                            option.text = humano.nombre;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error al cargar datos desde la API:', error));
-        }
-
-        // Llama a la función para cargar datos al cargar la página
-        cargarDatosDesdeAPI();
-
-        // Agregar eventos de clic a los botones
-        document.getElementById('eliminarBtn').addEventListener('click', eliminarUsuario);
-        document.getElementById('eliminarAleatoriamenteBtn').addEventListener('click', eliminarAleatoriamente);
-
-        // Función para eliminar un usuario
-        function eliminarUsuario() {
-            const select = document.getElementById('humanosSelect');
-            const selectedUserId = select.value;
-
-            // Verificar si se ha seleccionado un usuario en el select
-            if (!selectedUserId) {
-                console.error('Por favor, selecciona un usuario para eliminar.');
-                return;
-            }
-
-            // Confirmar con el usuario antes de realizar la eliminación
-            const confirmacion = confirm('¿Estás seguro de que quieres eliminar este usuario?');
-
-            if (confirmacion) {
-                // Realizar la lógica para eliminar el usuario con el ID seleccionado
-                const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${selectedUserId}`;
-
-                fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
+                    // Eliminar la fila de la tabla
+                    const filaEliminar = document.querySelector(`#tablaUsuariosBody tr[data-id="${idUsuarioAleatorio}"]`);
+                    if (filaEliminar) {
+                        filaEliminar.remove();
+                        console.log(`Usuario con ID ${idUsuarioAleatorio} eliminado exitosamente.`);
+                    } else {
+                        console.error(`No se encontró la fila del usuario con ID ${idUsuarioAleatorio}.`);
                     }
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-                        }
-
-                        // Eliminar la opción del select
-                        select.remove(select.selectedIndex);
-
-                        console.log(`Usuario con ID ${selectedUserId} eliminado exitosamente.`);
-
-                        // Redirigir a la página deseada después de eliminar
-                        window.location.href = './dashboarddios.html';
-                    })
-                    .catch(error => console.error('Error al eliminar usuario:', error));
-            }
+                .catch(error => console.error('Error al eliminar usuario:', error));
         }
+    } else {
+        alert('No hay usuarios para eliminar.');
+    }
+}
 
-        // Función para eliminar aleatoriamente un usuario
-        function eliminarAleatoriamente() {
-            const select = document.getElementById('humanosSelect');
 
-            // Verificar si hay opciones en el select
-            if (select.options.length === 0) {
-                console.error('No hay usuarios para eliminar.');
-                return;
-            }
+      cargarDatosDesdeAPI();
 
-            // Obtener un índice aleatorio
-            const randomIndex = Math.floor(Math.random() * select.options.length);
-
-            // Obtener el ID del usuario aleatorio
-            const randomUserId = select.options[randomIndex].value;
-
-            // Confirmar con el usuario antes de realizar la eliminación
-            const confirmacion = confirm(`¿Estás seguro de que quieres eliminar aleatoriamente al usuario con ID ${randomUserId}?`);
-
-            if (confirmacion) {
-                // Realizar la lógica para eliminar el usuario aleatorio
-                const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${randomUserId}`;
-
-                fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-                        }
-
-                        // Eliminar la opción del select
-                        select.remove(randomIndex);
-
-                        console.log(`Usuario con ID ${randomUserId} eliminado aleatoriamente.`);
-
-                        // Redirigir a la página deseada después de eliminar aleatoriamente
-                        window.location.href = './dashboarddios.html';
-                    })
-                    .catch(error => console.error('Error al eliminar usuario aleatoriamente:', error));
-            }
-        }
+      document
+        .getElementById("eliminarTodosBtn")
+        .addEventListener("click", eliminarAleatorio);
     </script>
 
-    <!-- Asegúrate de incluir la biblioteca de Bootstrap (jQuery y Popper.js) antes de cerrar el cuerpo del documento -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>
