@@ -12,8 +12,8 @@
     <!-- Estilos personalizados -->
     <style>
       body {
-        /* background-image: url('https://img.freepik.com/vector-gratis/ilustracion-mitologia-diseno-plano-dibujado-mano_23-2149391243.jpg?w=740&t=st=1706826016~exp=1706826616~hmac=4892d2e5e6f3fda1024db0e03ebc53a84987dbe659aa46f8db77cb6e158a6ced');
-            /* Reemplaza 'tu_imagen_de_fondo.jpg' con la URL de tu imagen de fondo */
+        background-image: url("https://img.freepik.com/vector-gratis/ilustracion-mitologia-diseno-plano-dibujado-mano_23-2149391243.jpg?w=740&t=st=1706826016~exp=1706826616~hmac=4892d2e5e6f3fda1024db0e03ebc53a84987dbe659aa46f8db77cb6e158a6ced");
+        /* Reemplaza 'tu_imagen_de_fondo.jpg' con la URL de tu imagen de fondo */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -28,13 +28,19 @@
         margin-top: 10px;
         /* Ajusta el espacio entre el select y los botones */
       }
+
+      /* Estilos para la tabla con Bootstrap */
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+      }
     </style>
   </head>
 
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-md-6 offset-md-3 text-center">
+        <div class="col-md-8 offset-md-2 text-center">
           <div class="btn-group">
             <h1>Elimina a tus humanos</h1>
             <button type="button" class="btn btn-danger" id="eliminarTodosBtn">
@@ -42,39 +48,34 @@
             </button>
           </div>
 
-          <!-- Tabla dinámica para mostrar los usuarios -->
-          <table class="table table-bordered table-striped mt-3">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaUsuariosBody">
-              <!-- Aquí se cargarán dinámicamente los usuarios -->
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped mt-3">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaUsuariosBody">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
-      // Declarar token como variable global
       let token;
 
-      // Función para cargar datos desde la API con autenticación
       function cargarDatosDesdeAPI() {
-        // Obtener el token almacenado en sessionStorage
         token = sessionStorage.getItem("token");
 
-        // Verificar si el token está presente
         if (!token) {
           console.error("No se encontró un token en sessionStorage");
           return;
         }
 
-        // Reemplaza 'URL_DE_TU_API' con la URL real de tu API
         fetch("http://127.0.0.1:8000/api/dioses/recuperar/humanos", {
           method: "GET",
           headers: {
@@ -82,49 +83,38 @@
           },
         })
           .then((response) => {
-            // Verificar si la respuesta es exitosa (código 200 OK)
             if (!response.ok) {
               throw new Error(
                 `Error en la solicitud: ${response.status} ${response.statusText}`
               );
             }
 
-            // Devolver la respuesta como JSON
             return response.json();
           })
           .then((data) => {
-            // Imprimir la respuesta para verificar su contenido
             console.log("Respuesta de la API:", data);
 
-            // Obtener la referencia a la tabla
             const tablaUsuariosBody =
               document.getElementById("tablaUsuariosBody");
 
-            // Limpiar filas existentes en la tabla
             tablaUsuariosBody.innerHTML = "";
 
-            // Filtrar los humanos con vida = 1
             const humanosConVida = data.data.filter(
               (humano) => humano.vida === 1
             );
 
-            // Agregar una fila por cada elemento en los datos filtrados
             humanosConVida.forEach((humano) => {
               const fila = tablaUsuariosBody.insertRow();
 
-              // Agregar celdas con datos del humano
               const celdaId = fila.insertCell(0);
               const celdaNombre = fila.insertCell(1);
               const celdaAcciones = fila.insertCell(2);
 
-              // Agregar datos del humano a las celdas
               celdaId.textContent = humano.id;
               celdaNombre.textContent = humano.nombre;
 
-              // Agregar atributo data-id a la fila
               fila.setAttribute("data-id", humano.id);
 
-              // Agregar botón de eliminar en la celda de acciones
               const btnEliminar = document.createElement("button");
               btnEliminar.textContent = "Eliminar";
               btnEliminar.classList.add("btn", "btn-danger");
@@ -139,15 +129,12 @@
           );
       }
 
-      // Función para eliminar un usuario
       function eliminarUsuario(idUsuario) {
-        // Confirmar con el usuario antes de realizar la eliminación
         const confirmacion = confirm(
           `¿Estás seguro de que quieres eliminar al usuario con ID ${idUsuario}?`
         );
 
         if (confirmacion) {
-          // Realizar la lógica para eliminar el usuario con el ID especificado
           const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${idUsuario}`;
 
           fetch(url, {
@@ -163,7 +150,6 @@
                 );
               }
 
-              // Eliminar la fila de la tabla
               const filaEliminar = document.querySelector(
                 `#tablaUsuariosBody tr[data-id="${idUsuario}"]`
               );
@@ -183,54 +169,58 @@
             );
         }
       }
-      
-      // Función para eliminar un usuario de manera aleatoria
-function eliminarAleatorio() {
-    // Obtener todas las filas de la tabla
-    const filas = document.querySelectorAll('#tablaUsuariosBody tr');
 
-    // Verificar si hay al menos un usuario
-    if (filas.length > 0) {
-        // Obtener un índice aleatorio
-        const indiceAleatorio = Math.floor(Math.random() * filas.length);
+      function eliminarAleatorio() {
+        const filas = document.querySelectorAll("#tablaUsuariosBody tr");
 
-        // Obtener el ID del usuario correspondiente al índice aleatorio
-        const idUsuarioAleatorio = filas[indiceAleatorio].getAttribute('data-id');
+        if (filas.length > 0) {
+          const indiceAleatorio = Math.floor(Math.random() * filas.length);
 
-        // Confirmar con el usuario antes de realizar la eliminación
-        const confirmacion = confirm(`¿Estás seguro de que quieres eliminar al usuario con ID ${idUsuarioAleatorio}?`);
+          const idUsuarioAleatorio =
+            filas[indiceAleatorio].getAttribute("data-id");
 
-        if (confirmacion) {
-            // Realizar la lógica para eliminar el usuario con el ID especificado
+          const confirmacion = confirm(
+            `¿Estás seguro de que quieres eliminar al usuario con ID ${idUsuarioAleatorio}?`
+          );
+
+          if (confirmacion) {
             const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${idUsuarioAleatorio}`;
 
             fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-                    }
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(
+                    `Error en la solicitud: ${response.status} ${response.statusText}`
+                  );
+                }
 
-                    // Eliminar la fila de la tabla
-                    const filaEliminar = document.querySelector(`#tablaUsuariosBody tr[data-id="${idUsuarioAleatorio}"]`);
-                    if (filaEliminar) {
-                        filaEliminar.remove();
-                        console.log(`Usuario con ID ${idUsuarioAleatorio} eliminado exitosamente.`);
-                    } else {
-                        console.error(`No se encontró la fila del usuario con ID ${idUsuarioAleatorio}.`);
-                    }
-                })
-                .catch(error => console.error('Error al eliminar usuario:', error));
+                const filaEliminar = document.querySelector(
+                  `#tablaUsuariosBody tr[data-id="${idUsuarioAleatorio}"]`
+                );
+                if (filaEliminar) {
+                  filaEliminar.remove();
+                  console.log(
+                    `Usuario con ID ${idUsuarioAleatorio} eliminado exitosamente.`
+                  );
+                } else {
+                  console.error(
+                    `No se encontró la fila del usuario con ID ${idUsuarioAleatorio}.`
+                  );
+                }
+              })
+              .catch((error) =>
+                console.error("Error al eliminar usuario:", error)
+              );
+          }
+        } else {
+          alert("No hay usuarios para eliminar.");
         }
-    } else {
-        alert('No hay usuarios para eliminar.');
-    }
-}
-
+      }
 
       cargarDatosDesdeAPI();
 
