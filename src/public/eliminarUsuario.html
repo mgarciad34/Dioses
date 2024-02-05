@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu Título</title>
+    <title>Eliminar Usuarios</title>
     <!-- Asegúrate de incluir la biblioteca de Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- Estilos personalizados -->
@@ -88,9 +88,11 @@
                     // Agregar una opción por cada elemento en los datos de la API
                     data.data.forEach(humano => {
                         const option = document.createElement('option');
-                        option.value = humano.id;
-                        option.text = humano.nombre;
-                        select.appendChild(option);
+                        if(humano.vida != 0){
+                            option.value = humano.id;
+                            option.text = humano.nombre;
+                            select.appendChild(option);
+                        }
                     });
                 })
                 .catch(error => console.error('Error al cargar datos desde la API:', error));
@@ -122,7 +124,7 @@
                 const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${selectedUserId}`;
 
                 fetch(url, {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -138,7 +140,7 @@
                         console.log(`Usuario con ID ${selectedUserId} eliminado exitosamente.`);
 
                         // Redirigir a la página deseada después de eliminar
-                        window.location.href = 'tu_pagina_redireccion.html';
+                        window.location.href = './dashboarddios.html';
                     })
                     .catch(error => console.error('Error al eliminar usuario:', error));
             }
@@ -168,7 +170,7 @@
                 const url = `http://127.0.0.1:8000/api/dioses/eliminar/humano/${randomUserId}`;
 
                 fetch(url, {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -184,7 +186,7 @@
                         console.log(`Usuario con ID ${randomUserId} eliminado aleatoriamente.`);
 
                         // Redirigir a la página deseada después de eliminar aleatoriamente
-                        window.location.href = 'tu_pagina_redireccion.html';
+                        window.location.href = './dashboarddios.html';
                     })
                     .catch(error => console.error('Error al eliminar usuario aleatoriamente:', error));
             }
