@@ -15,6 +15,7 @@ btnregistro.addEventListener('click', function (event) {
             sessionStorage.setItem("rol", data.rol);
             sessionStorage.setItem("usuario", data.user);
             if(data.rol == "humano"){
+                sessionStorage.setItem("correo", correo.value)
                 window.location.href = "./dashboardhumano.html";
             }else if (data.rol == "dios"){
                 window.location.href = "./dashboarddios.html";    
