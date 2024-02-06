@@ -10,7 +10,8 @@ module.exports = {
         registrarHumano: './src/public/js/pages/dioses/registrarhumano.js',
         crearPruebaLibre: './src/public/js/pages/dioses/pruebaslibres.js',
         crearPruebaEleccion: './src/public/js/pages/dioses/pruebaseleccion.js',
-        crearPruebaValoracion: './src/public/js/pages/dioses/pruebasvaloracion.js'
+        crearPruebaValoracion: './src/public/js/pages/dioses/pruebasvaloracion.js',
+        dashboardHumano: './src/public/js/pages/humanos/consultarhumano.js'
     },
     output: {
         filename: '[name].bundle.js',
