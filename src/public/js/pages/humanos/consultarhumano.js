@@ -7,8 +7,12 @@ var id_humano;
 
 obtenerIdHumano(url, metodo)
     .then(function(id) {
-        id_humano = id; // Guardamos el ID obtenido
-        return obtenerVida(id_humano.id_humano); // Llamamos a obtenerVida con el ID
+        // Guardamos el ID obtenido
+        id_humano = id;
+        // Guardar el ID obtenido en sessionStorage
+        sessionStorage.setItem('id_humano', id_humano.id_humano); 
+
+        return obtenerVida(id_humano.id_humano);
     })
     .then(function(vida) {
         console.log('Vida obtenida:', vida);
@@ -23,7 +27,7 @@ obtenerIdHumano(url, metodo)
         if (vidaGuardada === 1) {
             window.location.href = "./dashboardhumanovivo.html";
         } else if (vidaGuardada === 0) {
-            window.location.href = window.location.href = "./dashboardhumanomuerto.html";
+            window.location.href = "./dashboardhumanomuerto.html";
         } else {
             console.error('Valor de vida no válido:', vidaGuardada);
         }
