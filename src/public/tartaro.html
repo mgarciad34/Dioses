@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <title>Ver tartaro</title>
+    <style>
+      body {
+        background-color: darkgray;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      #miTabla {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="table-responsive">
+        <table class="table" id="miTabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const token = sessionStorage.getItem("token");
+    fetch("http://localhost:8000/api/dioses/obtener/tartaro", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((datos) => {
+        const tbody = document.querySelector("#miTabla tbody");
+        tbody.innerHTML = "";
+        datos.forEach((item) => {
+          const fila = document.createElement("tr");
+
+          const celdaNombre = document.createElement("td");
+          celdaNombre.textContent = item.nombre;
+
+          const celdaCorreo = document.createElement("td");
+          celdaCorreo.textContent = item.correo;
+
+          fila.appendChild(celdaNombre);
+          fila.appendChild(celdaCorreo);
+
+          tbody.appendChild(fila);
+        });
+      })
+      .catch((error) => console.error("Error al obtener los datos:", error));
+  </script>
+</html>
