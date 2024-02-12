@@ -27,6 +27,9 @@
     <!-- Your JavaScript code -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // Limpiar el localStorage al cargar esta página
+        localStorage.clear();
+
         const selectFetch = document.getElementById("selectFetch");
         const resultadoFetch = document.getElementById("resultadoFetch");
 
@@ -52,7 +55,7 @@
             .then((response) => response.json())
             .then((data) => {
               // Check if the data array is empty
-              if (data.length ===   0) {
+              if (data.length === 0) {
                 // Display a message indicating there are no questions
                 resultadoFetch.innerHTML = "<p>No tienes preguntas.</p>";
               } else {
@@ -88,8 +91,12 @@
                   responderButton.addEventListener("click", function () {
                     // Guardar datos de la fila en localStorage
                     localStorage.setItem("respuesta", JSON.stringify(item));
-                    // Redireccionar a la página de respuesta
-                    window.location.href = "respuestavaloracion.html"; // Cambiar esto por la página donde se responde la pregunta
+                    // Redireccionar a la página correspondiente según el tipo de pregunta
+                    if (selectedValue === "eleccion") {
+                      window.location.href = "respuestaeleccion.html"; // Cambiar esto por el HTML correspondiente para el tipo de pregunta "eleccion"
+                    } else {
+                      window.location.href = "respuestavaloracion.html"; // Cambiar esto por la página donde se responde la pregunta para los otros tipos de pregunta
+                    }
                   });
                   tdActions.appendChild(responderButton);
                   tr.appendChild(tdActions);
