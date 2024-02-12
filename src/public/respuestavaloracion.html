@@ -15,8 +15,8 @@
       <h2>Responder Pregunta</h2>
       <div id="preguntaContainer"></div>
       <div class="form-group mt-3">
-        <label for="respuestaSelect">Selecciona una respuesta:</label>
-        <select class="form-control" id="respuestaSelect">
+        <label for="valoracionSelect">Selecciona una valoración del 1 al 5:</label>
+        <select class="form-control" id="valoracionSelect">
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -24,60 +24,77 @@
           <option value="5">5</option>
         </select>
       </div>
-      <button class="btn btn-primary" id="responderBtn">
-        Responder Pregunta
-      </button>
+      <button class="btn btn-primary" id="responderBtn">Responder Pregunta</button>
     </div>
 
     <!-- Your JavaScript code -->
     <script>
-   document.addEventListener("DOMContentLoaded", function () {
-    const preguntaContainer = document.getElementById("preguntaContainer");
-    const respuestaSelect = document.getElementById("respuestaSelect");
-    const responderBtn = document.getElementById("responderBtn");
-    
-    if (!preguntaContainer || !respuestaSelect || !responderBtn) {
-        console.error("Algunos elementos no existen en el DOM.");
-        return;
-    }
-
-    // Obtener y mostrar la pregunta
-    const preguntaSeleccionada = JSON.parse(localStorage.getItem("preguntaSeleccionada"));
-    if (preguntaSeleccionada) {
-        const preguntaLabel = document.createElement("label");
-        preguntaLabel.textContent = preguntaSeleccionada.pregunta;
-        preguntaContainer.appendChild(preguntaLabel);
-    } else {
-        console.error("No se pudo obtener la pregunta seleccionada del almacenamiento local.");
-    }
-
-    responderBtn.addEventListener("click", async function () {
-        const token = sessionStorage.getItem("token");
-
-        if (!preguntaSeleccionada || !token) {
-            console.error("No se pudo obtener la pregunta seleccionada o el token de la sesión.");
+      document.addEventListener("DOMContentLoaded", async function () {
+        const preguntaContainer = document.getElementById("preguntaContainer");
+        const valoracionSelect = document.getElementById("valoracionSelect");
+        const responderBtn = document.getElementById("responderBtn");
+        
+        if (!preguntaContainer || !valoracionSelect || !responderBtn) {
+            console.error("Algunos elementos no existen en el DOM.");
             return;
         }
 
-        const respuesta = respuestaSelect.value;
-        const resultadoGuardado = localStorage.getItem("resultado");
-        let datos;
-
-        if (respuesta === resultadoGuardado) {
-            datos = {
-                "id": preguntaSeleccionada.id,
-                "superada":  0
-            };
-            console.log("¡Respuesta correcta!");
-        } else {
-            datos = {
-                "id": preguntaSeleccionada.id,
-                "superada":  1
-            };
-            console.log("Respuesta incorrecta");
+        const respuestaLocalStorage = JSON.parse(localStorage.getItem("respuesta"));
+        if (!respuestaLocalStorage) {
+            console.error("No se pudo obtener la respuesta del almacenamiento local.");
+            return;
         }
 
+        // Realizar fetch y guardar el resultado antes de la funcionalidad del botón
         try {
+          const pruebaId = respuestaLocalStorage.prueba_id;
+          const token = sessionStorage.getItem("token");
+
+          const responseValoracion = await fetch(`http://localhost:8000/api/humano/recuperar/pruebas/valoracion/${pruebaId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!responseValoracion.ok) {
+            throw new Error(`Error HTTP: ${responseValoracion.status}`);
+          }
+
+          const responseDataValoracion = await responseValoracion.json();
+          const valor = responseDataValoracion.data.valor;
+          localStorage.setItem("peticion", valor);
+        } catch (error) {
+          console.error("Error al obtener el resultado de la valoración:", error);
+        }
+
+        // Obtener y mostrar la pregunta
+        const preguntaLabel = document.createElement("label");
+        preguntaLabel.textContent = respuestaLocalStorage.pregunta;
+        preguntaContainer.appendChild(preguntaLabel);
+
+        responderBtn.addEventListener("click", async function () {
+          const respuesta = valoracionSelect.value;
+          const correctaLocalStorage = localStorage.getItem("peticion");
+          let datos; // Declarar la variable datos aquí
+
+          if (respuesta === correctaLocalStorage) {
+            console.log("Correcto");
+            datos = {
+                "id": respuestaLocalStorage.id,
+                "superada":  0
+            };
+            console.log(datos);
+          } else {
+            console.log("Incorrecto");
+            datos = {
+                "id": respuestaLocalStorage.id,
+                "superada":  1
+            };
+            console.log(datos);
+          }
+
+          try {
+            const token = sessionStorage.getItem("token");
             const response = await fetch("http://localhost:8000/api/humano/superada", {
                 method: "PUT",
                 headers: {
@@ -97,9 +114,8 @@
         } catch (error) {
             console.error("Error al realizar la petición 'superada':", error);
         }
-    });
-});
-
+        });
+      });
     </script>
   </body>
 </html>

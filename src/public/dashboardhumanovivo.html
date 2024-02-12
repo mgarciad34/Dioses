@@ -1,140 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestion de pruebas</title>
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Gestión de Pruebas</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gestion de pruebas</title>
+<!-- Bootstrap CSS -->
+<link
+rel="stylesheet"
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<a class="navbar-brand" href="#">Gestión de Pruebas</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <!-- Opción del Navbar para redirigir a otro HTML -->
-          <li class="nav-item">
-            <a class="nav-link" href="caracteristicashumanos.html">Características del humano</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav mr-auto">
+<!-- Opción del Navbar para redirigir a otro HTML -->
+<li class="nav-item">
+<a class="nav-link" href="caracteristicashumanos.html">Características del humano</a>
+</li>
+</ul>
+</div>
+</nav>
 
-    <!-- Selector de Fetch -->
-    <select id="selectFetch" class="form-control mt-3">
-      <option value="libres">Fetch Libres</option>
-      <option value="valoracion">Fetch Valoracion</option>
-      <option value="eleccion">Fetch Eleccion</option>
-    </select>
+<!-- Selector de Fetch -->
+<select id="selectFetch" class="form-control mt-3">
+<option value="libres">Fetch Libres</option>
+<option value="valoracion">Fetch Valoracion</option>
+<option value="eleccion">Fetch Eleccion</option>
+</select>
 
-    <!-- Resultado del Fetch -->
-    <div id="resultadoFetch" class="mt-3"></div>
+<!-- Resultado del Fetch -->
+<div id="resultadoFetch" class="mt-3"></div>
 
-    <!-- jQuery y Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- jQuery y Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- JavaScript personalizado -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Limpiar el localStorage al cargar esta página
-        localStorage.clear();
+<!-- JavaScript personalizado -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+// Limpiar el localStorage al cargar esta página
+localStorage.clear();
+const token = sessionStorage.getItem("token");
 
-        const selectFetch = document.getElementById("selectFetch");
-        const resultadoFetch = document.getElementById("resultadoFetch");
+const selectFetchList = document.querySelectorAll(".form-control");
 
-        selectFetch.addEventListener("change", function () {
-          const token = sessionStorage.getItem("token");
-          const id = sessionStorage.getItem("id_humano");
-          const selectedValue = selectFetch.value;
-          let url = "";
+selectFetchList.forEach((selectFetch) => {
+    selectFetch.addEventListener("change", function () {
+        const id = sessionStorage.getItem("id_humano");
+        const selectedValue = selectFetch.value;
+        let url = "";
 
-          if (selectedValue === "libres") {
+        if (selectedValue === "libres") {
             url = `http://localhost:8000/api/humano/obtener/pruebas/libres/${id}`;
-          } else if (selectedValue === "valoracion") {
+        } else if (selectedValue === "valoracion") {
             url = `http://localhost:8000/api/humano/obtener/pruebas/valoracion/${id}`;
-          } else if (selectedValue === "eleccion") {
+        } else if (selectedValue === "eleccion") {
             url = `http://localhost:8000/api/humano/obtener/pruebas/eleccion/${id}`;
-          }
+        }
 
-          fetch(url, {
+        const resultadoFetch = selectFetch.nextElementSibling;
+
+        fetch(url, {
             headers: {
-              Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
-          })
+        })
             .then((response) => response.json())
             .then((data) => {
-              // Check if the data array is empty
-              if (data.length === 0) {
-                // Display a message indicating there are no questions
-                resultadoFetch.innerHTML = "<p>No tienes preguntas.</p>";
-              } else {
-                // Proceed with creating and displaying the table as before
-                const table = document.createElement("table");
-                table.classList.add("table", "table-bordered");
+                // Check if the data array is empty
+                if (data.length === 0) {
+                    // Display a message indicating there are no questions
+                    resultadoFetch.innerHTML = "<p>No tienes preguntas.</p>";
+                } else {
+                    // Proceed with creating and displaying the table as before
+                    const table = document.createElement("table");
+                    table.classList.add("table", "table-bordered");
 
-                const thead = document.createElement("thead");
-                const headerRow = document.createElement("tr");
-                const headers = ["ID", "Pregunta", "Acciones"]; // Agregar la columna de acciones
-                headers.forEach((headerText) => {
-                  const th = document.createElement("th");
-                  th.textContent = headerText;
-                  headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
+                    const thead = document.createElement("thead");
+                    const headerRow = document.createElement("tr");
+                    const headers = ["ID", "Pregunta", "Acciones"]; // Agregar la columna de acciones
+                    headers.forEach((headerText) => {
+                        const th = document.createElement("th");
+                        th.textContent = headerText;
+                        headerRow.appendChild(th);
+                    });
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
 
-                const tbody = document.createElement("tbody");
-                data.forEach((item) => {
-                  const tr = document.createElement("tr");
-                  Object.values(item).forEach((value) => {
-                    const td = document.createElement("td");
-                    td.textContent = value;
-                    tr.appendChild(td);
-                  });
+                    const tbody = document.createElement("tbody");
+                    const responderButton = document.createElement("button");
+                    responderButton.textContent = "Responder Pregunta";
+                    responderButton.classList.add("btn", "btn-primary", "btn-sm");
 
-                  // Agregar botón de Responder Pregunta
-                  const tdActions = document.createElement("td");
-                  const responderButton = document.createElement("button");
-                  responderButton.textContent = "Responder Pregunta";
-                  responderButton.classList.add("btn", "btn-primary", "btn-sm");
-                  responderButton.addEventListener("click", function () {
-                    // Guardar datos de la fila en localStorage
-                    localStorage.setItem("respuesta", JSON.stringify(item));
-                    // Redireccionar a la página correspondiente según el tipo de pregunta
-                    if (selectedValue === "eleccion") {
-                      window.location.href = "respuestaeleccion.html"; // Cambiar esto por el HTML correspondiente para el tipo de pregunta "eleccion"
-                    } else {
-                      window.location.href = "respuestavaloracion.html"; // Cambiar esto por la página donde se responde la pregunta para los otros tipos de pregunta
-                    }
-                  });
-                  tdActions.appendChild(responderButton);
-                  tr.appendChild(tdActions);
+                    data.forEach((item) => {
+                        const tr = document.createElement("tr");
+                        Object.values(item).forEach((value, index) => {
+                            const td = document.createElement("td");
+                            if (index === 2) {
+                                // Cambiar el contenido según el valor de acciones
+                                if (value === 0) {
+                                    td.textContent = "Superado"; // Superado
+                                    // Deshabilitar el botón si acciones es 0
+                                    responderButton.disabled = true;
+                                } else if (value === 1) {
+                                    td.textContent = "No Superado"; // No Superado
+                                    // Deshabilitar el botón si acciones es 1
+                                    responderButton.disabled = true;
+                                } else {
+                                    td.textContent = "Pendiente de realizar"; // Pendiente de realizar
+                                    // Habilitar el botón solo si acciones es "Pendiente de realizar"
+                                    responderButton.disabled = false;
+                                }
+                            } else {
+                                td.textContent = value;
+                            }
+                            tr.appendChild(td);
+                        });
 
-                  tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
+                        // Agregar botón de Responder Pregunta
+                        const tdActions = document.createElement("td");
+                        const clonedButton = responderButton.cloneNode(true);
+                        clonedButton.addEventListener("click", function () {
+                            // Guardar datos de la fila en localStorage
+                            localStorage.setItem("respuesta", JSON.stringify(item));
+                            // Redireccionar a la página correspondiente según el tipo de pregunta
+                            if (selectedValue === "eleccion") {
+                                window.location.href = "respuestaeleccion.html"; // Cambiar esto por el HTML correspondiente para el tipo de pregunta "eleccion"
+                            } else {
+                                window.location.href = "respuestavaloracion.html"; // Cambiar esto por la página donde se responde la pregunta para los otros tipos de pregunta
+                            }
+                        });
+                        tdActions.appendChild(clonedButton);
+                        tr.appendChild(tdActions);
 
-                // Clear previous results and append the new table
-                resultadoFetch.innerHTML = "";
-                resultadoFetch.appendChild(table);
-              }
+                        tbody.appendChild(tr);
+                    });
+                    table.appendChild(tbody);
+
+                    // Clear previous results and append the new table
+                    resultadoFetch.innerHTML = "";
+                    resultadoFetch.appendChild(table);
+                }
             })
             .catch((error) => {
-              resultadoFetch.innerHTML = `Error: ${error}`;
+                resultadoFetch.innerHTML = `Error: ${error}`;
             });
-        });
-      });
-    </script>
-  </body>
+    });
+});
+});
+
+</script>
+</body>
 </html>
