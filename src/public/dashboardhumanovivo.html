@@ -1,11 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>humano vivo</title>
-</head>
-<body>
-    
-</body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion de pruebas</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <select id="selectFetch">
+      <option value="libres">Fetch Libres</option>
+      <option value="valoracion">Fetch Valoracion</option>
+      <option value="eleccion">Fetch Eleccion</option>
+    </select>
+
+    <div id="resultadoFetch" class="mt-3"></div>
+
+    <!-- Modals omitted for brevity -->
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Your JavaScript code -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const selectFetch = document.getElementById("selectFetch");
+        const resultadoFetch = document.getElementById("resultadoFetch");
+
+        selectFetch.addEventListener("change", function () {
+          const token = sessionStorage.getItem("token");
+          const id = sessionStorage.getItem("id_humano");
+          const selectedValue = selectFetch.value;
+          let url = "";
+
+          if (selectedValue === "libres") {
+            url = `http://localhost:8000/api/humano/obtener/pruebas/libres/${id}`;
+          } else if (selectedValue === "valoracion") {
+            url = `http://localhost:8000/api/humano/obtener/pruebas/valoracion/${id}`;
+          } else if (selectedValue === "eleccion") {
+            url = `http://localhost:8000/api/humano/obtener/pruebas/eleccion/${id}`;
+          }
+
+          fetch(url, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Check if the data array is empty
+              if (data.length ===   0) {
+                // Display a message indicating there are no questions
+                resultadoFetch.innerHTML = "<p>No tienes preguntas.</p>";
+              } else {
+                // Proceed with creating and displaying the table as before
+                const table = document.createElement("table");
+                table.classList.add("table", "table-bordered");
+
+                const thead = document.createElement("thead");
+                const headerRow = document.createElement("tr");
+                const headers = ["ID", "Pregunta"];
+                headers.forEach((headerText) => {
+                  const th = document.createElement("th");
+                  th.textContent = headerText;
+                  headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement("tbody");
+                data.forEach((item) => {
+                  const tr = document.createElement("tr");
+                  Object.values(item).forEach((value) => {
+                    const td = document.createElement("td");
+                    td.textContent = value;
+                    tr.appendChild(td);
+                  });
+                  tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+
+                // Clear previous results and append the new table
+                resultadoFetch.innerHTML = "";
+                resultadoFetch.appendChild(table);
+              }
+            })
+            .catch((error) => {
+              resultadoFetch.innerHTML = `Error: ${error}`;
+            });
+        });
+      });
+    </script>
+  </body>
 </html>
