@@ -11,20 +11,40 @@
     />
   </head>
   <body>
-    <select id="selectFetch">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Gestión de Pruebas</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- Opción del Navbar para redirigir a otro HTML -->
+          <li class="nav-item">
+            <a class="nav-link" href="caracteristicashumanos.html">Características del humano</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Selector de Fetch -->
+    <select id="selectFetch" class="form-control mt-3">
       <option value="libres">Fetch Libres</option>
       <option value="valoracion">Fetch Valoracion</option>
       <option value="eleccion">Fetch Eleccion</option>
     </select>
 
+    <!-- Resultado del Fetch -->
     <div id="resultadoFetch" class="mt-3"></div>
 
-    <!-- jQuery and Bootstrap JS -->
+    <!-- jQuery y Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Your JavaScript code -->
+    <!-- JavaScript personalizado -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Limpiar el localStorage al cargar esta página
