@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responder Pregunta</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-3">
+      <h2>Responder Pregunta</h2>
+      <div id="preguntaContainer"></div>
+      <div class="form-group mt-3">
+        <label for="respuestaSelect">Selecciona una respuesta:</label>
+        <select class="form-control" id="respuestaSelect">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="responderBtn">
+        Responder Pregunta
+      </button>
+    </div>
+
+    <!-- Your JavaScript code -->
+    <script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const preguntaContainer = document.getElementById("preguntaContainer");
+    const respuestaSelect = document.getElementById("respuestaSelect");
+    const responderBtn = document.getElementById("responderBtn");
+    
+    if (!preguntaContainer || !respuestaSelect || !responderBtn) {
+        console.error("Algunos elementos no existen en el DOM.");
+        return;
+    }
+
+    // Obtener y mostrar la pregunta
+    const preguntaSeleccionada = JSON.parse(localStorage.getItem("preguntaSeleccionada"));
+    if (preguntaSeleccionada) {
+        const preguntaLabel = document.createElement("label");
+        preguntaLabel.textContent = preguntaSeleccionada.pregunta;
+        preguntaContainer.appendChild(preguntaLabel);
+    } else {
+        console.error("No se pudo obtener la pregunta seleccionada del almacenamiento local.");
+    }
+
+    responderBtn.addEventListener("click", async function () {
+        const token = sessionStorage.getItem("token");
+
+        if (!preguntaSeleccionada || !token) {
+            console.error("No se pudo obtener la pregunta seleccionada o el token de la sesión.");
+            return;
+        }
+
+        const respuesta = respuestaSelect.value;
+        const resultadoGuardado = localStorage.getItem("resultado");
+        let datos;
+
+        if (respuesta === resultadoGuardado) {
+            datos = {
+                "id": preguntaSeleccionada.id,
+                "superada":  0
+            };
+            console.log("¡Respuesta correcta!");
+        } else {
+            datos = {
+                "id": preguntaSeleccionada.id,
+                "superada":  1
+            };
+            console.log("Respuesta incorrecta");
+        }
+
+        try {
+            const response = await fetch("http://localhost:8000/api/humano/superada", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(datos),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log("Respuesta de la petición 'superada':", responseData);
+            window.location.href = "dashboardhumanovivo.html";
+        } catch (error) {
+            console.error("Error al realizar la petición 'superada':", error);
+        }
+    });
+});
+
+    </script>
+  </body>
+</html>
