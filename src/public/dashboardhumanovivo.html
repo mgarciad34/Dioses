@@ -32,25 +32,19 @@
         </ul>
     </div>
 </nav>
-
-<!-- Selector de Fetch -->
 <select id="selectFetch" class="form-control mt-3">
     <option value="libres">Pruebas Libres</option>
     <option value="valoracion">Pruebas Valoracion</option>
     <option value="eleccion">Pruebas Eleccion</option>
 </select>
 
-<!-- Resultado del Fetch -->
 <div id="resultadoFetch" class="mt-3"></div>
-
-<!-- jQuery y Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-      // Limpiar el localStorage al cargar esta página
       localStorage.clear();
       const token = sessionStorage.getItem("token");
 
@@ -105,11 +99,9 @@
                                   if (index === 2) {
                                       if (value === 0) {
                                           td.textContent = "Superado";
-                                          // Si el estado es Superado, deshabilitar el botón
                                           tr.classList.add("superado");
                                       } else if (value === 1) {
                                           td.textContent = "No Superado";
-                                          // Si el estado es No Superado, deshabilitar el botón
                                           tr.classList.add("no-superado");
                                       } else {
                                           td.textContent = "Pendiente de realizar";
@@ -155,8 +147,6 @@
                   resultadoFetch.innerHTML = `Error: ${error}`;
               });
       });
-
-      // Dispatch the change event manually to load the initial table
       selectFetch.dispatchEvent(new Event('change'));
   });
 </script>
