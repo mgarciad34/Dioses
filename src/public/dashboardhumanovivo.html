@@ -105,9 +105,6 @@
                   table.appendChild(thead);
 
                   const tbody = document.createElement("tbody");
-                  const responderButton = document.createElement("button");
-                  responderButton.textContent = "Responder Pregunta";
-                  responderButton.classList.add("btn", "btn-primary", "btn-sm");
 
                   data.forEach((item) => {
                     const tr = document.createElement("tr");
@@ -119,16 +116,10 @@
                           // Cambiar el contenido según el valor de acciones
                           if (value === 0) {
                             td.textContent = "Superado"; // Superado
-                            // Deshabilitar el botón si acciones es 0
-                            responderButton.disabled = true;
                           } else if (value === 1) {
                             td.textContent = "No Superado"; // No Superado
-                            // Deshabilitar el botón si acciones es 1
-                            responderButton.disabled = true;
                           } else {
                             td.textContent = "Pendiente de realizar"; // Pendiente de realizar
-                            // Habilitar el botón solo si acciones es "Pendiente de realizar"
-                            responderButton.disabled = false;
                           }
                         } else {
                           td.textContent = value;
@@ -139,18 +130,18 @@
 
                     // Agregar botón de Responder Pregunta
                     const tdActions = document.createElement("td");
-                    const clonedButton = responderButton.cloneNode(true);
-                    clonedButton.addEventListener("click", function () {
-                      // Guardar datos de la fila en localStorage
+                    const responderButton = document.createElement("button");
+                    responderButton.textContent = "Responder Pregunta";
+                    responderButton.classList.add(
+                      "btn",
+                      "btn-primary",
+                      "btn-sm"
+                    );
+                    responderButton.addEventListener("click", function () {
                       localStorage.setItem("respuesta", JSON.stringify(item));
-                      // Redireccionar a la página correspondiente según el tipo de pregunta
-                      if (selectedValue === "eleccion") {
-                        window.location.href = "respuestaeleccion.html"; // Cambiar esto por el HTML correspondiente para el tipo de pregunta "eleccion"
-                      } else {
-                        window.location.href = "respuestavaloracion.html"; // Cambiar esto por la página donde se responde la pregunta para los otros tipos de pregunta
-                      }
+                      window.location.href = "respuestapruebaslibres.html";
                     });
-                    tdActions.appendChild(clonedButton);
+                    tdActions.appendChild(responderButton);
                     tr.appendChild(tdActions);
 
                     tbody.appendChild(tr);
