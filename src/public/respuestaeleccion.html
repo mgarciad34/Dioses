@@ -90,6 +90,7 @@
             console.log("Correcto");
             datos = {
                 "id": respuestaLocalStorage.id,
+                "id_humano": sessionStorage.getItem("id_humano"),
                 "superada":  0
             };
             console.log(datos);
@@ -97,6 +98,7 @@
             console.log("Incorrecto");
             datos = {
                 "id": respuestaLocalStorage.id,
+                "id_humano": sessionStorage.getItem("id_humano"),
                 "superada":  1
             };
             console.log(datos);
