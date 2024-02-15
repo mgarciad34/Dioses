@@ -1,0 +1,104 @@
+document.addEventListener("DOMContentLoaded", async function () {
+    const preguntaContainer = document.getElementById("preguntaContainer");
+    const respuestaSelect = document.getElementById("respuestaSelect");
+    const responderBtn = document.getElementById("responderBtn");
+    
+    if (!preguntaContainer || !respuestaSelect || !responderBtn) {
+        console.error("Algunos elementos no existen en el DOM.");
+        return;
+    }
+
+    const respuestaLocalStorage = JSON.parse(localStorage.getItem("respuesta"));
+    if (!respuestaLocalStorage) {
+        console.error("No se pudo obtener la respuesta del almacenamiento local.");
+        return;
+    }
+
+    // Obtener y mostrar la pregunta
+    const preguntaLabel = document.createElement("label");
+    preguntaLabel.textContent = respuestaLocalStorage.pregunta;
+    preguntaContainer.appendChild(preguntaLabel);
+
+    try {
+      const pruebaId = respuestaLocalStorage.prueba_id;
+      const token = sessionStorage.getItem("token");
+
+      const response = await fetch(`http://localhost:8000/api/humano/recuperar/pruebas/eleccion/${pruebaId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      const res1 = responseData.data.respuesta1;
+      const res2 = responseData.data.respuesta2;
+      const correcta = responseData.data.correcta;
+      localStorage.setItem("correcta", correcta)
+
+      const opciones = [
+        { texto: res1 },
+        { texto: res2 },
+      ];
+
+      localStorage.setItem("opciones", JSON.stringify(opciones));
+
+      // Llenamos el select con las opciones
+      opciones.forEach(opcion => {
+        const option = document.createElement("option");
+        option.textContent = opcion.texto;
+        respuestaSelect.appendChild(option);
+      });
+    } catch (error) {
+      console.error("Error al obtener las opciones de respuesta:", error);
+    }
+
+    responderBtn.addEventListener("click", async function () {
+      const respuesta = respuestaSelect.value;
+      const correctaLocalStorage = localStorage.getItem("correcta");
+      let datos; // Declarar la variable datos aquí
+
+      if (respuesta === correctaLocalStorage) {
+        console.log("Correcto");
+        datos = {
+            "id": respuestaLocalStorage.id,
+            "id_humano": sessionStorage.getItem("id_humano"),
+            "superada":  0
+        };
+        console.log(datos);
+      } else {
+        console.log("Incorrecto");
+        datos = {
+            "id": respuestaLocalStorage.id,
+            "id_humano": sessionStorage.getItem("id_humano"),
+            "superada":  1
+        };
+        console.log(datos);
+      }
+
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await fetch("http://localhost:8000/api/humano/superada", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(datos),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log("Respuesta de la petición 'superada':", responseData);
+        window.location.href = "dashboardhumanovivo.html";
+    } catch (error) {
+        console.error("Error al realizar la petición 'superada':", error);
+    }
+    });
+  });

@@ -11,7 +11,13 @@ module.exports = {
         crearPruebaLibre: './src/public/js/pages/dioses/pruebaslibres.js',
         crearPruebaEleccion: './src/public/js/pages/dioses/pruebaseleccion.js',
         crearPruebaValoracion: './src/public/js/pages/dioses/pruebasvaloracion.js',
-        dashboardHumano: './src/public/js/pages/humanos/consultarhumano.js'
+        dashboardHumano: './src/public/js/pages/humanos/consultarhumano.js',
+        tartaro: './src/public/js/pages/dioses/http/http-tartaro.js',
+        eliseos: './src/public/js/pages/dioses/http/http-eliseos.js',
+        respuestapruebalibre: './src/public/js/pages/humanos/http/http-respuestalibres.js',
+        respuestapruebavaloracion: './src/public/js/pages/humanos/http/http-respuestavaloracion.js',
+        respuestapruebaeleccion: './src/public/js/pages/humanos/http/http-respuestaeleccion.js',
+        dashboardhumanovivo: './src/public/js/pages/humanos/http/http-dashboardhumanovivo.js'
     },
     output: {
         filename: '[name].bundle.js',
