@@ -35,28 +35,21 @@
 
         // Evento de clic para el botón
         document.getElementById("responderBtn").addEventListener("click", function() {
-          // Obtener el valor del texto de la respuesta
           const respuesta = document.getElementById("respuestaText").value;
 
-          // Obtener el prueba_id del localStorage
           const pruebaId = parsedData.prueba_id;
 
-          // Obtener el id_humano del sessionStorage
           const idHumano = sessionStorage.getItem("id_humano");
 
-          // Obtener el token del sessionStorage
           const token = sessionStorage.getItem("token");
 
-          // Configurar el cuerpo de la primera solicitud POST
           const cuerpo = {
             id: pruebaId,
             respuesta: respuesta
           };
 
-          // URL de la primera solicitud Fetch
           const url = 'http://127.0.0.1:8000/api/humano/resultado/prueba/libre';
 
-          // Configurar la primera solicitud Fetch
           fetch(url, {
             method: "POST",
             headers: {
@@ -67,31 +60,22 @@
 
           })
           .then(response => {
-            // Manejo de la respuesta
             if (!response.ok) {
               throw new Error("Hubo un problema con la solicitud");
             }
             return response.json();
           })
           .then(data => {
-            // Manejo de los datos de respuesta
             console.log(data);
-            // Guardar el resultado en una variable
             const resultado = data;
-
-            // Configurar el cuerpo de la segunda solicitud PUT
             const cuerpoPut = {
               id: pruebaId,
               id_humano: idHumano,
               superada: resultado.superada
             };
 
-            console.log("Cuerpo del PUT:", cuerpoPut); // Aquí se agrega el console.log para imprimir el cuerpo del PUT
-
-            // URL de la segunda solicitud Fetch
             const urlPut = 'http://127.0.0.1:8000/api/humano/superada';
 
-            // Configurar la segunda solicitud Fetch
             fetch(urlPut, {
               method: "PUT",
               headers: {
@@ -101,25 +85,19 @@
               body: JSON.stringify(cuerpoPut)
             })
             .then(response => {
-              // Manejo de la respuesta
               if (!response.ok) {
                 throw new Error("Hubo un problema con la solicitud");
               }
               return response.json();
             })
             .then(data => {
-              // Manejo de los datos de respuesta
-              console.log(data);
-              // Redireccionar a otro HTML después de completar la segunda solicitud
               window.location.href = 'dashboardhumanovivo.html';
             })
             .catch(error => {
-              // Manejo de errores
               console.error("Error:", error);
             });
           })
-          .catch(error => {
-            // Manejo de errores de la primera solicitud
+          .catch(error => { 
             console.error("Error:", error);
           });
         });
