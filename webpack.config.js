@@ -17,7 +17,8 @@ module.exports = {
         respuestapruebalibre: './src/public/js/pages/humanos/http/http-respuestalibres.js',
         respuestapruebavaloracion: './src/public/js/pages/humanos/http/http-respuestavaloracion.js',
         respuestapruebaeleccion: './src/public/js/pages/humanos/http/http-respuestaeleccion.js',
-        dashboardhumanovivo: './src/public/js/pages/humanos/http/http-dashboardhumanovivo.js'
+        dashboardhumanovivo: './src/public/js/pages/humanos/http/http-dashboardhumanovivo.js',
+        caracteristicasdios: './src/public/js/pages/dioses/http/http-caracteristicasdios.js'
     },
     output: {
         filename: '[name].bundle.js',

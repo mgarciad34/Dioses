@@ -63,13 +63,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        // Función para obtener poder
+       
         function obtenerPoder() {
-            // Implementa lógica según tus necesidades
             console.log('Obtener poder...');
         }
 
-        // Función para cargar datos al cargar la página
         function cargarDatosUsuarios() {
             var token = sessionStorage.getItem('token');
             var usuario = sessionStorage.getItem('usuario');
@@ -89,7 +87,6 @@
                     apiUrl = 'http://127.0.0.1:8000/api/dioses/obtener/dios';
             }
 
-            // Realiza la petición a la API incluyendo el token
             fetch(apiUrl, {
                 method: 'GET',
                 headers: {
@@ -98,19 +95,14 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Imprime toda la respuesta de la API en la consola para depuración
                     console.log('Respuesta completa de la API:', data);
-
-                    // Verifica que la propiedad 'data' existe y no es undefined
                     if (data) {
-                        // Asigna los valores a los campos de input
                         document.getElementById('sabiduria').value = data.sabiduria || '';
                         document.getElementById('nobleza').value = data.nobleza || '';
                         document.getElementById('virtud').value = data.virtud || '';
                         document.getElementById('maldad').value = data.maldad || '';
                         document.getElementById('audacia').value = data.audacia || '';
 
-                        // Muestra los datos en el DOM
                         var resultadoDom = document.getElementById('resultadoDom');
                     } else {
                         console.error('Error: La propiedad "data" no está presente en la respuesta de la API.');
@@ -121,17 +113,14 @@
                 });
         }
 
-        // Cargar datos al cargar la página
         document.addEventListener('DOMContentLoaded', cargarDatosUsuarios);
 
-        // Función para actualizar datos
         async function actualizarDatos() {
             try {
                 var token = sessionStorage.getItem('token');
                 var usuario = sessionStorage.getItem('usuario');
                 var idUsuario;
 
-                // Obtén el ID del usuario según el nombre (Zeus, Poseidon, Hades)
                 switch (usuario) {
                     case 'Zeus':
                         idUsuario = 1;
@@ -156,7 +145,6 @@
                 var maldad = document.getElementById('maldad').value;
                 var audacia = document.getElementById('audacia').value;
 
-                // Construye el objeto JSON a enviar
                 var datosActualizados = {
                     id: idUsuario,
                     sabiduria: sabiduria,
@@ -166,7 +154,6 @@
                     audacia: audacia
                 };
 
-                // Realiza la petición PUT a la API incluyendo el token
                 const respuesta = await fetch(apiUrl, {
                     method: 'PUT',
                     headers: {
@@ -180,11 +167,9 @@
                     throw new Error(`Error de red: ${respuesta.status}`);
                 }
 
-                // Imprime la respuesta de la API en la consola para depuración
                 const data = await respuesta.json();
                 console.log('Respuesta de la API al actualizar datos:', data);
 
-                // Actualiza el mensaje en el DOM según la respuesta
                 var resultadoDom = document.getElementById('resultadoDom');
                 window.location.href = "./dashboarddios.html";
                 
