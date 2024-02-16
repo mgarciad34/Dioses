@@ -151,9 +151,11 @@
       function cargarDatosUsuarios() {
         var token = sessionStorage.getItem("token");
         var id_humano = sessionStorage.getItem("id_humano");
+        var vida = sessionStorage.getItem("vida");
 
         // URL de la API para obtener el destino
-        var destinoUrl = "http://localhost:8000/api/humano/destino/" + id_humano;
+        var destinoUrl =
+          "http://localhost:8000/api/humano/destino/" + id_humano;
 
         // Realiza la petición para obtener el destino
         fetch(destinoUrl, {
@@ -214,8 +216,17 @@
               document.getElementById("maldad").value = data.maldad || "";
               document.getElementById("audacia").value = data.audacia || "";
 
-              // Muestra los datos en el DOM
-              var resultadoDom = document.getElementById("resultadoDom");
+              // Cambiar el texto del enlace del navbar según el valor de vida
+              var enlaceNavbar = document.querySelector(
+                ".navbar-nav .nav-item a.nav-link"
+              );
+              if (vida && parseInt(vida) == 0) {
+                enlaceNavbar.textContent = "Ver Resumen";
+                enlaceNavbar.setAttribute("href", "dashboardhumanomuerto.html");
+              } else {
+                enlaceNavbar.textContent = "Resolver Pruebas";
+                enlaceNavbar.setAttribute("href", "dashboardhumanovivo.html");
+              }
             } else {
               console.error(
                 'Error: La propiedad "data" no está presente en la respuesta de la API.'
